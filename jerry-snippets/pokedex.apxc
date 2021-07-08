@@ -1,92 +1,92 @@
 public class PokeDex {
 	final string cons = 'bcdfghjklmnpqrstvwxz';
-    final string vowels = 'aeiou';
+	final string vowels = 'aeiou';
 	final integer maxNameLength = 12;
-    
-    List<Account> pokeAccounts = new List<Account>();
-    
-    public string NameGen(){
+	
+	List<Account> pokeAccounts = new List<Account>();
+	
+	public string NameGen(){
 		//selects the length of the name, min 3, max 15
-        integer length = Integer.valueof((Math.random()*maxNameLength))+3;
+		integer length = Integer.valueof((Math.random()*maxNameLength))+3;
 		//selects if the vowels are the even letters or not
-        integer even = Integer.valueof((Math.random()*2));
-        string pokeName = '';
+		integer even = Integer.valueof((Math.random()*2));
+		string pokeName = '';
 
-        //loops over the length of the name
-        for(integer pos = 0; pos < length; pos++){
+		//loops over the length of the name
+		for(integer pos = 0; pos < length; pos++){
 			string letter = '';
 			//if the pos mod 2 doesn't match even then use a random consanant, else use a random vowel
-            if (Math.mod(pos, 2) != even){
+			if (Math.mod(pos, 2) != even){
 				integer selection = Integer.valueof((Math.random()*cons.length()));
-                letter = cons.substring(selection, selection+1);
-            }else{
+				letter = cons.substring(selection, selection+1);
+			}else{
 				integer selection = Integer.valueof((Math.random()*vowels.length()));
-                letter = vowels.substring(selection, selection+1);                
-            }
-            pokeName += letter;
-        }
-        return pokeName;
-    }
-    
-    public void GenPokeNames(){
-        for (integer index =0; index < 151; index++){
-	        system.debug(NameGen());
+				letter = vowels.substring(selection, selection+1);				
+			}
+			pokeName += letter;
+		}
+		return pokeName;
+	}
+	
+	public void GenPokeNames(){
+		for (integer index =0; index < 151; index++){
+			system.debug(NameGen());
 			Account a = new Account();
-            a.Name = 'Pokemon - ' + NameGen() + ' ' + index;
-            pokeAccounts.add(a);
-        }
-        insert pokeAccounts;
-    }
-    
-    public void BobOverride(){
-        //populates contact list 'bobmob' 
-        //first with contacts who are not named bob, updates their name to bob
-        //then adds 200 new bobs to the list before upserting the set
-        List<Contact> bobMob = new List<Contact>();
-        
+			a.Name = 'Pokemon - ' + NameGen() + ' ' + index;
+			pokeAccounts.add(a);
+		}
+		insert pokeAccounts;
+	}
+	
+	public void BobOverride(){
+		//populates contact list 'bobmob' 
+		//first with contacts who are not named bob, updates their name to bob
+		//then adds 200 new bobs to the list before upserting the set
+		List<Contact> bobMob = new List<Contact>();
+		
 		for(Contact c : [SELECT id, FirstName FROM Contact WHERE FirstName != 'Bob']) {
-            c.FirstName = 'Bob';
-            bobMob.add(c);
-        }
+			c.FirstName = 'Bob';
+			bobMob.add(c);
+		}
 
-        for (integer index = 0; index < 200; index++){
-            Contact c = new Contact();
-            c.LastName = NameGen();
-            c.FirstName = 'Bob';
-            bobMob.add(c);
-        }
-        database.upsert(bobMob, True);
-    }
-    
-    public void PurgePokemon(){
-        //retrieves the list in the event that GenPokeNames and PurgePokemon are obtained during separate instances of the object
+		for (integer index = 0; index < 200; index++){
+			Contact c = new Contact();
+			c.LastName = NameGen();
+			c.FirstName = 'Bob';
+			bobMob.add(c);
+		}
+		database.upsert(bobMob, True);
+	}
+	
+	public void PurgePokemon(){
+		//retrieves the list in the event that GenPokeNames and PurgePokemon are obtained during separate instances of the object
 		List<Account> pokeAccounts = [SELECT id FROM Account WHERE Name Like 'Pokemon - %'];
-        delete pokeAccounts;
-    }
-    
-    public void SetDefaultData(){
-        /*
-         * pulls everything from contacts that does not have an email or a phone
-         * checks if there is an email and fills in with default@fakesite.com
-         * does the same for phone numbers
-         * 
+		delete pokeAccounts;
+	}
+	
+	public void SetDefaultData(){
+		/*
+		 * pulls everything from contacts that does not have an email or a phone
+		 * checks if there is an email and fills in with default@fakesite.com
+		 * does the same for phone numbers
+		 * 
 		 */
 		  
 		List<Contact> missingNo = new List<Contact>();
-        for (Contact c : [SELECT id, Email, Phone FROM Contact WHERE Email = NULL or Phone = NULL]){
-            if (c.Email == NULL){
-	        	c.Email = 'Default@fakesite.com';
-            }
-            if (c.Phone == NULL){
-	           	c.Phone = '2028675309';
-            }
-            missingNo.add(c);
-        }
-        database.update(missingNo, false);
-        
-    }
-    
-    
-    
-    
+		for (Contact c : [SELECT id, Email, Phone FROM Contact WHERE Email = NULL or Phone = NULL]){
+			if (c.Email == NULL){
+				c.Email = 'Default@fakesite.com';
+			}
+			if (c.Phone == NULL){
+			   	c.Phone = '2028675309';
+			}
+			missingNo.add(c);
+		}
+		database.update(missingNo, false);
+		
+	}
+	
+	
+	
+	
 }
