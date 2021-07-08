@@ -1,0 +1,64 @@
+public class Pokemon {
+    
+    List<Contact> pokemonContacts = new List<Contact>();
+    
+    public void Add151Contacts(){
+        for(integer i = 0; i < 152; i++){
+            Contact c = new Contact();
+            c.LastName = 'UniquePokemon ' + i;
+            pokemonContacts.add(c);
+        }
+        insert pokemonContacts;
+    }
+    
+    public void DeleteAllPokemon(){
+        integer i = 0;
+        String pname = 'UniquePokemon ' + i;
+        //SELECT id FROM Contact where lastname LIKE 'UniquePokemon %'
+        for(contact c: [SELECT LastName FROM Contact where LastName LIKE 'UniquePokemon %']){
+            
+            System.debug('pokecontacts' + c.LastName);
+            i++;
+            pname = 'UniquePokemon ' + i;
+            pokemonContacts.add(c);
+        }
+		delete pokemonContacts;
+        
+    }
+    
+    public void UpdateDefaultEmail(){
+        for(contact c: [SELECT Email FROM Contact WHERE Email = '']){
+            c.Email = 'customemail@pokedex.net';
+            pokemonContacts.add(c);
+        }
+        
+        database.update(pokemonContacts, false);
+    }
+    
+    public void UpdateDefaultPhone(){
+        for(contact c: [SELECT Phone FROM Contact WHERE Phone = '']){
+            c.Phone = '999-999-9999';
+            pokemonContacts.add(c);
+        }
+        
+        database.update(pokemonContacts, false);
+    }
+    
+    public void Bobverse(){
+        //Method from Apex Challenge IV in week2
+        for(integer i = 0; i < 200; i++){
+            Contact c = new Contact();
+            c.FirstName = 'Bob';
+            c.LastName = 'Bobby' + i;
+            pokemonContacts.add(c);
+        }
+        
+        for(contact c: [SELECT FirstName FROM Contact where FirstName != 'Bob']){
+            c.FirstName = 'Bob';
+            pokemonContacts.add(c);
+        }
+        
+        database.upsert(pokemonContacts, false);
+    }
+
+}
