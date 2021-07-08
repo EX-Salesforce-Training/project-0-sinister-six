@@ -1,0 +1,63 @@
+/*
+Create a class that has a method to add 151 accounts to your org.
+These accounts should have unique names
+
+Query for the accounts you made, and then remove them from the database.
+
+Query for all contacts that do not have a email and/or phone number associated with them, and provide default data for those fields.
+
+Create 200 new contacts, plus update all existing contacts first names to bob. In a single DML update and and add the new contacts.
+*/
+
+public class ApexChallenge {
+    
+    List<Account> myAcc = new List<Account>();
+    List<Contact> myCont = new List<Contact>();
+    
+    public void InsertAccount(){   
+   	 	for(integer i=0; i<152; i++){
+    	  Account newAcc = new Account(Name = 'Pokemon'+i);
+          myAcc.add(newAcc);
+    	}
+    	database.insert(myAcc);
+    	system.debug(myAcc);
+    }
+    
+    public void RemoveAccount(){
+    	List<Account> delAcc = [SELECT Name FROM Account WHERE Name LIKE 'Pokemon%']; 
+    	delete(delAcc);
+    }
+    
+    public void CreateDefaultEmailAndPhone(){
+        for(Contact c: [SELECT phone, email from Contact Where phone='' OR email='']){
+            c.Email = 'default@gmail.com';
+            c.Phone = '1231231212';
+            myCont.add(c);
+        }
+        database.update(myCont,true);
+        system.debug(myCont);
+    }
+   
+    
+    public void InsAndUpdate(){
+        for(integer i=0; i<200; i++){
+     		Contact newCont = new Contact();
+         	newCont.FirstName = 'Jim'+i;
+         	newCont.LastName = 'Tom'+i;
+            myCont.add(newCont);
+   		}  
+        
+    	for(Contact c : [SELECT FirstName FROM Contact]) {
+           c.FirstName = 'Bob';
+           MyCont.add(c);
+        }
+    	database.upsert(MyCont);
+    }
+    
+      public void RemoveContact(){
+   		List<Contact> delCont = [SELECT FirstName FROM Contact WHERE FirstName LIKE'Jim%']; 
+    	delete(delCont);
+    }
+    
+}
+
