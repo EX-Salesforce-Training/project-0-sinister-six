@@ -16,6 +16,7 @@ public class Challenge5 {
         	}
             if (c.email == null) {
                Task newTask = new Task();
+               newTask.OwnerId = c.Id;
                newTask.status = 'NA';
                newTask.Priority = 'Low';
                newTask.Subject = 'Please, create an email for your account! Thanks!';
