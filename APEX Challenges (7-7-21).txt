@@ -1,0 +1,73 @@
+public class Pokemon {
+
+    // Challenge 1: Make 151 new accounts
+    public void GottaAddEmAll() {
+        List<Account> pokedex = new List<Account>();
+        
+    	//This for loop should add 151 entries into the "pokedex" list.        
+        for (integer i = 0; i<=151; i++) {
+            Account cont = new Account();
+            cont.Name = 'Pokemon #' + i;
+            pokedex.add(cont);
+        }
+        
+        //This should put everything in pokedex into the Accounts item in the database!
+    	insert pokedex;
+    }
+
+    // Challenge 2: Kill off every single one of those accounts!
+
+
+    public void Order66() {
+        // List of Pokemon to kill off
+        List<Account> killList = new List<Account>();
+        
+        // A selector that finds any account names with 'Pokemon'
+        for(Account acco : [SELECT Name FROM Account WHERE Name LIKE 'Pokemon%']) {
+            killList.add(acco);
+        }
+        
+        // Get them.
+        delete killList;
+    }
+    
+    // Challenge 3: Provide default email/phone data for each contact that doesn't have one
+
+    
+    public void defaultValues() {
+        List<Contact> offTheGrid = new List<Contact>();
+        
+        for(Contact cont : [SELECT Phone, Email FROM CONTACT WHERE Phone = null OR Email = null]) {
+            if (cont.Phone == null) {
+                cont.Phone = '1111111111';
+            }
+            if (cont.Email == null) {
+                cont.Email = 'samplemail@mail.com';
+            }
+            offTheGrid.add(cont);
+        }
+        
+        update offTheGrid;
+    }
+    
+    
+    
+    // Challenge 4: Create 200 new contacts, and update all current contacts to a first name of "Bob" in a single DML statement (upsert)!
+    public void bobTime() {
+        List<Contact> mobOfBobs = new List<Contact>();
+        
+        for(integer i = 0; i<=200; i++) {
+            Contact cont = new Contact();
+            cont.lastName = 'McNewbob';
+            cont.firstName = 'Bob';
+            mobOfBobs.add(cont);
+        }
+        
+        for(Contact cont : [SELECT firstName FROM contact WHERE firstName != 'Bob']) {
+            cont.firstName = 'Bob';
+            mobOfBobs.add(cont);
+        }
+        
+        upsert mobOfBobs;
+    }
+}
