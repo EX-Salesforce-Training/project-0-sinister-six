@@ -1,0 +1,25 @@
+public class LetsTaskItUp {
+    // Challenge 5: Two things!
+    // 1. Set the contacts' phone numbers to be equal to the phone number in their related account
+    // 2. If there isn't an email, create a task for someone to create it!
+    public void contactMatcher() {
+    	List<Contact> doesntAddUp = new List<Contact>();
+        List<Task> createAnEmail = new List<Task>();
+    	for (contact c : [SELECT phone, email, account.phone FROM contact]) {
+        	if (c.phone != c.account.phone) {
+            	c.phone = c.account.phone;
+                doesntAddUp.add(c);
+        	}
+            if (c.email = null) {
+               Task newTask = new Task();
+               newTask.OwnerId = c.Id;
+               newTask.status = 'Not Started';
+               newTask.Priority = 'Normal';
+               newTask.Subject = 'Hey! Create an email for your account!'
+               createAnEmail.add(newTask);
+            }
+    	}
+        update doesntAddUp;
+        insert createAnEmail;
+    }
+}
