@@ -1,0 +1,54 @@
+public class AccountKids {
+    // Challenge #6: The goals
+    // 1. Create a method that creates n number of contacts. Each contact should have a last name, first name, phone, and email.
+    // 2. Within that method, call upon a second method that creates n accounts. Each one should have a name, annual revenue, phone, and site.
+    // 3. Create a method that gets all child contacts from a given account, and changes the contact's phone number to the account's phone number.
+    
+    public void accountCreator(List<Contact> cons) {
+        List<Account> newAccounts = new List<Account>();
+        for (Contact con: cons) {
+            Account newacco = new Account();
+            newacco.name = 'Bobinno';
+            newacco.AnnualRevenue = 45000;
+            newacco.Phone = '222-222-2222';
+            newacco.Site = 'www.worldofbobs.com';
+            newacco.Id = con.OwnerId;
+            newAccounts.add(newacco);
+        }
+        insert newAccounts;
+    }
+    
+    public void contactCreator(integer n) {
+        List<Contact> newContacts = new List<Contact>();
+        for(integer i=0; i<=n; i++) {
+            Contact newcon = new Contact();
+            newcon.LastName = 'McBobberson';
+            newcon.FirstName = 'Bobster #'+i;
+            newcon.Phone = '111-111-1111';
+            newcon.Email = 'randommail@mail.com';
+            newContacts.add(newcon);
+        }
+        accountCreator(newContacts);
+        insert newContacts;
+    }
+    
+    public void phoneChanger() {
+        List<Contact> phonesToChange = new List<Contact>();
+        List<Account> referenceAcco = [SELECT phone, (select phone from contacts) FROM account];
+        for(Account acco : ReferenceAcco) {
+            if (acco.phone != null) {}
+                for (Contact con : phonesToChange) {
+                    con.phone = acco.phone;
+                    phonesToChange.add(con);
+                }
+        	}
+        update phonesToChange;
+    }
+    
+    public void display() {
+        for(Contact con: [SELECT firstname, lastname, account.name, account.phone, account.site FROM contact]) {
+            system.debug('Name: ' + con.firstname + ' ' + con.lastname + ' Account Name:' + con.account.name + ' Phone: ' + con.account.phone + ' Site: ' + con.account.site);
+        }
+    }
+    
+}
