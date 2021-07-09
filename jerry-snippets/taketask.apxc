@@ -1,0 +1,101 @@
+public class TakingItToTask {
+	//Task bobsTask = new Task();
+    
+    //Contact c = [SELECT OwnerId FROM Contact LIMIT 1];
+    
+    /*pubic TakingItToTask(){
+     *   bobsTask.OwnerId = c.OwnerId; 
+     *   //status, subject, priority are required feilds
+     *   bobsTask.subject = 'Please update the email for ' + c.Name;  
+     *}
+	*/
+    
+    //List<Account> ExampleAccountList = [SELECT name, (SELECT lastname FROM Contacts) FROM Account];
+
+ 
+    
+    public void NitPicker(){
+		List<Contact> Fixing = new List<Contact>();
+		List<Task> toFinish = new List<Task>();
+        for (Contact c : [SELECT id, email, phone, account.phone, name FROM Contact]){
+            if (c.phone != c.account.phone){
+                c.phone = c.account.phone;
+            }
+            Fixing.add(c);
+            if (c.email == null){
+                Task updatePlz = new Task();
+                updatePlz.Subject = 'Please add email to ' + c.name + 's account.';
+			    updatePlz.Priority = 'High';
+                updatePlz.Status = 'Not Started';
+                updatePlz.WhoId = c.id;
+				
+            }
+        }
+        database.update(Fixing);
+        database.insert(toFinish);
+    }
+
+    public string makePhone(integer base){
+		//String.valueOf(integer) - converts a number into a string, 55 becomes '55'
+		//leftPad(integer, string) - runs an internal for loop, 
+		//		concatonating input string to the parent string on the left side until equal length
+        //		equivalent to: 
+        //		for(integer i = string.length(), i++, i<finalLength){
+        // 			string = character + string
+        // 		}
+        // 			
+        return String.valueOf(base).leftPad(10, '5');
+    }
+        
+    public void CreateAccounts(integer length){
+		List<Account> accList = new List<Account>();
+        for (integer cur = 0; cur < length; cur++){
+            Account bob = new Account();
+            bob.name = PokeDex.NameGen();
+            bob.AnnualRevenue = cur;
+            bob.Phone = makePhone(cur);
+            bob.Site = 'www.' + cur + '.com';
+            accList.add(bob);
+        }
+		insert accList;
+        CreateContacts(accList);
+    }
+
+    public void CreateContacts(List<Account> accList){
+        List<Contact> conList = new List<Contact>();
+		integer mental = 20;
+        for(Account a : accList){
+            Contact c = new Contact();
+			c.lastname = 'Bobbert' + mental++;
+            c.firstname = 'bob';
+            c.phone = makePhone(mental);
+			c.email = c.firstname + '@' + a.name + '.com';
+			c.AccountId = a.id;
+            conList.add(c);
+        }
+        insert conList;
+    }
+    
+    public void UpdateChildContacts(){
+        List<Account> AccList = [SELECT Phone, (SELECT Id, Phone FROM Contacts) FROM Account];
+        List<Contact> ConList = new List<Contact>();
+        
+        for(Account a : AccList){
+            List<Contact> curContacts = a.Contacts;
+            for(Contact c : curContacts){
+                c.phone = a.phone;
+                ConList.add(c);
+            }
+        }
+        update ConList;
+    }
+
+    public void GetAllContacts(){
+        for(contact c : [SELECT firstname, lastname, account.name, account.phone, account.site FROM Contact]){
+			//String.format(format_string, value_list)
+            system.debug(String.format('{0} {1} of {2} reachable at {3}, {4}', new List<String>{c.firstName, c.LastName, c.account.name, c.account.phone, c.account.site} ));
+        }
+        
+    }
+    
+}
