@@ -1,0 +1,8 @@
+public interface Airplane {
+    
+    void takeOff();
+    void changeAltitude(integer change);
+    void landingGear();
+    void landing();
+    
+}

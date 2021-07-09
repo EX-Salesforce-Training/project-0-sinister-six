@@ -1,0 +1,62 @@
+public virtual class Vehicle {
+    
+    public integer numOfVehicles = 0;
+    public integer speed = 1;
+    public enum medium{land, water, air}
+    public integer position = 0;
+    public integer gear = 1;
+    
+    //Our chain of constructors!
+    public Vehicle() {
+        this(1);
+    }
+    
+    public Vehicle(integer num) {
+        this(num, 1);
+        numOfVehicles = num;
+    }
+    
+    public Vehicle(integer num, integer initSpeed) {
+        this(num, initSpeed, 0);
+    }
+    
+    public Vehicle(integer num, integer initSpeed, integer initPos) {
+        this(num, initSpeed, initPos, 1);
+    }
+    
+    public Vehicle(integer num, integer initSpeed, integer initPos, integer initGear) {
+        system.debug('Vehicle constructed!');
+    }
+    
+    //Some overloaded methods!
+    public void letsMove() {
+        position += speed;
+        system.debug('We have moved over to position # ' +position);
+    }
+
+    public void letsMove(integer newSpeed) {
+        speed = newSpeed;
+        position += speed;
+        system.debug('Speed has been set to ' +speed+ '. With this new speed, we have moved to position ' +position+ '.');
+    }
+    
+    public virtual void stop() {
+        speed = 0;
+        system.debug('We have stopped at position #' +position);
+    }
+    
+    public void addVehicles(integer newVeh) {
+        numOfVehicles += newVeh;
+        system.debug('We now have ' +numOfVehicles+ 'generic vehicles!');
+    }
+    
+    public void shiftGears(integer shift) {
+        if (shift > 6) {
+            system.debug('That is literally impossible. Get over yourself.');
+        } else if (shift > 0 && shift <= 6) {
+            gear = shift;
+            speed = gear * 5;
+            system.debug('You are now in gear ' +gear+ '. Your speed is now ' +speed+ '.');
+        }
+    }
+}
