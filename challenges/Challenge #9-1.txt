@@ -1,0 +1,31 @@
+// Challenge #9: Triggers!
+// 1. Create a trigger that will check a contact that's about to be deleted! If it has any open opps, abort the deletion with an addError();
+// 2. Create a trigger that checks an account about to open. If it's from Cali, don't let it get made.
+// 3. Create a trigger that checks all new accounts to see if they have a related contact, and creates one if they don't!
+
+trigger AccountTrigger on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+    switch on trigger.operationtype {
+        when BEFORE_INSERT{
+            AccountTriggerHandler.caliProof(trigger.new);
+            AccountTriggerHandler.genericContact(trigger.new);
+        }
+        when BEFORE_UPDATE {
+            
+        }
+        when BEFORE_DELETE {
+            AccountTriggerHandler.dontDeleteMe(trigger.old);
+        }
+        when AFTER_INSERT {
+
+        }
+        when AFTER_UPDATE {
+            
+        }
+        when AFTER_DELETE {
+            
+        }
+        when AFTER_UNDELETE {
+            
+        }
+    }
+}

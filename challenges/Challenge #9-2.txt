@@ -1,0 +1,49 @@
+public class AccountTriggerHandler {
+    public static void dontDeleteMe(List<Account> accolist) {
+        Set<Opportunity> cantDelete = new Set<Opportunity>();
+        for(Opportunity opp : [SELECT id, stagename FROM Opportunity]) {
+            if (opp.stagename == 'Closed Won' || opp.stagename == 'Closed Lost') {
+                cantDelete.add(opp);
+            }
+        }
+        for (Account acco : accolist) {
+            for(Opportunity oppy : cantDelete) {
+                if (acco.id == oppy.id) {
+                    acco.addError('This account has open opportunities! You can\'t delete this!');
+                }
+            }
+        }
+    }
+    
+    public static void caliProof(List<Account> accolist) {
+        for (Account acco : accolist) {
+            if (acco.ShippingState == 'California' || acco.ShippingState == 'California') {
+                acco.addError('Wait, you\'re from California? Yeah...I don\'t think so. Go catch a wave or something.');
+            }
+        }
+    }
+
+    public static void genericContact(List<Account> accolist) {
+        Set<Account> accountsWithCtax = new Set<Account>();
+        List<Contact> placeholderContacts = new List<Contact>();
+        for (Account acco : accoList) {
+            for (Contact con : [SELECT accountId FROM Contact]) {
+                if (con.accountId == acco.Id) {
+                    accountsWithCtax.add(acco);
+                }
+            }
+        }
+        for (Account acco : accoList) {
+            if (!accountsWithCtax.contains(acco)) {
+                Contact newCon = new Contact();
+                newCon.AccountId = acco.Id;
+                newCon.Phone = acco.Phone;
+                //Name and address are "not writeable," for some reason...
+                //newCon.MailingAddress = acco.ShippingAddress;
+                //newCon.Name = acco.Name;
+                placeholderContacts.add(newCon);
+            }
+        }
+        insert placeholderContacts;
+    }
+}

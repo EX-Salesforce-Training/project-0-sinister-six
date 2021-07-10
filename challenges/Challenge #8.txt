@@ -1,0 +1,88 @@
+//Challenge #8: Throw an exception in a method, and in another method, handle it!
+//This looks really similar to Challenge #6. That's because it IS challenge #6!
+//We just reconfigured the Cessna class to fulfill the Challenge #8 requirements.
+//An exception can be thrown in the takeOff() method.
+//The failedTakeoff() method will handle that exception.
+
+public class Cessna extends Vehicle implements Airplane {
+    integer altitude;
+    string landingGear;
+    
+    //this. keywords!
+    public Cessna() {
+        this.numOfVehicles = 1;
+        this.speed = 0;
+        medium traveltype = medium.land;
+        this.position = 0;
+        this.gear = 1;
+        altitude = 0;
+        landingGear = 'Deployed';
+    }
+    
+    public void takeOff() {
+        if (altitude == 0 && speed >= 15 && landingGear == 'Deployed') {
+            altitude += 300;
+            system.debug('Takeoff! Our altitude is now ' +altitude+ '.');
+                } else if (altitude > 0) {
+                    system.debug('You are already in the air. See the clouds?');
+                } else if(altitude == 0 && landingGear == 'Retracted') {
+                    system.debug('You have to take out your landing gear...');
+                } else if (altitude == 0 && speed < 15 && landingGear == 'Deployed') {
+                    throw new TakeoffSpeedException();
+                }
+    }
+    
+    public void failedTakeoff() {
+        try{
+            takeOff();
+        } catch(TakeoffSpeedException t) {
+            t.setMessage('You are too slow! Your speed must be at least 15 (3rd gear) to take off.');
+            system.debug(t.getMessage());
+        } finally {
+            system.debug('Stuck on the ground? Loser.');
+        }
+    }
+    
+    public void changeAltitude(integer change) {
+        if (altitude > 0 && altitude + change > 0) {
+            altitude += change;
+            system.debug('Your altitude is now ' +altitude+ '.');
+        } else if(altitude > 0 && altitude + change <= 0) {
+            system.debug('Uh, no way Jose. You would crash this thing if you did that.');
+        } else if (altitude == 0) {
+            system.debug('You still have to take off, idiot...');
+        }
+    }
+    
+    //An overridden method!
+    public override void stop() {
+        if (altitude > 0) {
+            system.debug('Stopping is impossible! You are in the air!');
+        } else if (altitude < 0) {
+            //Use of the super. keyword!
+            super.stop();
+        }
+    }
+    
+    public void landingGear() {
+        if (landingGear == 'Deployed') {
+            landingGear = 'Retracted';
+            system.debug('Retracting landing gear.');
+         } else if (landingGear == 'Retracted') {
+            landingGear = 'Deployed';
+            system.debug('Deploying landing gear.');
+         }
+    }
+    
+    public void landing() {
+        if (landingGear == 'Deployed' && altitude <= 50) {
+            speed = 0;
+            altitude = 0;
+            system.debug('Safely landed!');
+        } else if (landingGear == 'Deployed' && altitude > 50) {
+            system.debug('You are still too high. Altitude should be at 50 or lower!');
+        } else if (landingGear == 'Retracted') {
+            system.debug('Dude...take out your landing gear...');
+        }
+    }
+}
