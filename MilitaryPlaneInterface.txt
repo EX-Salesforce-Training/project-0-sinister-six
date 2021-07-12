@@ -1,0 +1,4 @@
+public interface MilitaryPlaneInterface extends VehicleWeapons{
+	void LaunchMissile();
+    void ShootGuns();
+}

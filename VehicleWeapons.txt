@@ -1,0 +1,6 @@
+public interface VehicleWeapons {
+	
+    void ShootGuns();
+    
+    void ReloadGuns();
+}

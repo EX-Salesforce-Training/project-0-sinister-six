@@ -1,0 +1,41 @@
+public class RaptorJet extends Airplane implements MilitaryPlaneInterface {
+    
+    public RaptorJet(String name){
+        this.Name = name;
+    }
+    
+    public void ShootGuns(){
+        print(this.Name + ' is shooting its guns.');
+    }
+    
+    public void ReloadGuns(){
+        print(this.Name + '  cannot reload until it has landed.');
+    }
+    
+    public void LaunchMissile(){
+        print(this.Name + ' has launched a missile.');
+    }
+    
+    public void LockTarget(){
+        print(this.Name + ' has target locked.');
+    }
+    
+    public override void FlyingStatus(){
+        
+    }
+    
+    public void ShotDown(){
+        try{
+            integer i = 1 / 0;
+            
+        }
+        
+        catch(PlaneException p){
+            print('Plane was hit');
+        }
+        finally{
+            print('Finally this code was run');
+        }
+    }
+
+}

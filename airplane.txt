@@ -1,0 +1,45 @@
+public abstract class Airplane extends Vehicle {
+    public enum PlaneType {COMMERCIAL, PRIVATE_JET, MILITARY}
+    private boolean landingGearOut = false;
+    private PlaneType pType;
+    
+    public Airplane(){
+        this(1);
+        this.transportType = TransportMode.AIR;
+    }
+    
+    public Airplane(Integer i){
+        this('Chaining again');
+        System.debug('Airplane Chain: ' + i);
+    }
+    
+    public Airplane(String str){
+        System.debug(str);
+    }
+    
+    public virtual void SetLandingGear(boolean b){
+        if(this.GetSpeed() == 0) 
+            throw new PlaneException('Cannot set landing gear at 0mph');
+        landingGearOut = b;
+        print('Landing Gear OUT: ' + landingGearOut);
+    }
+    
+    public virtual void SeeStatus(){
+        print('Status of Plane: ' + this.Name);
+        print('Plane Type: ' + pType);
+        print('Transport Mode: ' + this.transportType);
+        print('Landing Gear Out: ' + this.landingGearOut);
+        print('Current Speed: ' + this.getSpeed() + ' mph');
+        print('Total Vehicle Count: ' + Vehicle.totalVehicles);
+    }
+    
+    public virtual override void AddSpeed(integer i){
+        super.AddSpeed(i);
+        if(super.GetSpeed() > 300){
+            super.SetSpeed(300);
+            print('Plane has reached MAX Speed: ' + this.GetSpeed());
+        }
+    }
+    
+    abstract public void FlyingStatus();
+}
