@@ -1,0 +1,12 @@
+/*
+ * Apex Challenge_VII
+ * Serif Korkmaz
+ * Created: 7/9/21
+ * Last Modified: 7/11/21 
+
+The interface should contain abstract methods pertaining to that vehicle class.
+*/
+public interface Bus {  
+    void turnOn();
+    void turnOff();
+}
