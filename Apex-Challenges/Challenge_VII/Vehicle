@@ -1,0 +1,33 @@
+/*
+ * Apex Challenge_VII
+ * Serif Korkmaz
+ * Created: 7/9/21
+ * Last Modified: 7/11/21 
+ 
+The vehicle should contain states that track the number of vehicles, speed, and an enum declaring the mode of transport 
+(AIR, WATER, or LAND.) as well as behaviors for movement and stopping.
+*/
+public abstract class Vehicle{
+    private integer numberOfvehicles;
+    public integer curSpeed{get;set;}
+    public integer door;
+    public String color;
+    public enum Transportation {AIR,WATER,LAND}
+
+        public Vehicle(){
+            numberOfvehicles++;
+        }
+    
+        public virtual void Accelerate(Integer speed){
+            this.curSpeed += speed;
+        }
+    
+        public virtual void Decelarate(){
+            if(this.curSpeed > 0)
+                this.curSpeed -= 10;
+            if(this.curSpeed == 0){
+                system.debug('Your vehicle has stopped. Turn off your engine!');
+            }
+        }
+        
+}
