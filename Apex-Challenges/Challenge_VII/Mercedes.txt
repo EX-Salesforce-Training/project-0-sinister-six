@@ -1,0 +1,67 @@
+/* Apex Challenge_VII
+ * Serif Korkmaz
+ * Created: 7/9/21
+ * Last Modified: 7/11/21 
+ * 
+Finally you should make a class that extends the vehicle and implements the interface that provides its own implementations, 
+as well as demonstrating overriding, overloading, constructor chaining, and the this and super keywords. Endeavor to prevent 
+redundant code, and ensure that invalid values cannot be passed to states like speed.
+*/ 
+
+public class Mercedes extends Vehicle implements Bus { 
+    Boolean isMoving = true;
+    integer currentShift = 0;
+    
+    public Mercedes(){
+        door = 4;
+        color = 'blue';
+        Transportation transportationType = Transportation.LAND;
+        curSpeed = 0;
+    } 
+    public void turnOn(){
+        if(isMoving){
+            currentShift++;
+            curSpeed += 10;
+            system.debug('You vehicle is moving with '+curSpeed+'mph speed.');
+        }
+        
+    }
+    
+    public override void Accelerate(integer speed){
+        if(isMoving){
+            if(speed>20){
+                curSpeed += speed;
+                currentShift++;
+                system.debug('Your vehicle is gaining speed current speed is now'+ curSpeed +'mph.');
+                system.debug('Your current shift is on'+ currentShift);
+            }  
+            else {
+             	system.debug('Your shift is not change');
+                  }
+           
+        system.debug('You need to press gas pedal for speed!');
+        }         
+    }
+                         
+    public override void Decelarate(){
+        if(isMoving){
+            if(curSpeed>10){
+                currentShift--;
+                system.debug('Your vehicle is slowing down speed is now'+ curSpeed +'mph.');
+                system.debug('Your current shift is on'+ currentShift);
+            	}  
+            	else {
+             	system.debug('You stopped.');
+                }
+           
+        system.debug('You are not moving.');
+        }         
+    }
+    public void turnOff(){
+     	if(isMoving){
+            currentShift = 0;
+            curSpeed = 0;
+        system.debug('You stopped.');
+       }
+    }
+}
