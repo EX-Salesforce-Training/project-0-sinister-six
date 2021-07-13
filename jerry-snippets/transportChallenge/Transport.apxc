@@ -1,0 +1,61 @@
+public virtual class Transport {
+    string name {get;set;}
+    integer size;
+	integer maxSpeed;
+    integer speed {get; set{
+        if (value > maxSpeed){
+            speed = maxSpeed;
+        }else if(value < 0){
+            speed = 0;
+        }else{
+            speed = value;
+        }
+   		
+    }}
+    integer passengers {get;set;}
+    integer capacity;
+    List<integer> pos = new List<integer>();
+	List<integer> direction = new List<integer>();
+        
+    public Transport(){
+		passengers = 0;
+        pos.add(0);
+        pos.add(0);
+
+        direction.add(1);
+        direction.add(0);
+        
+        system.debug('transport initialized');
+    }
+    
+    public void addPassenger(){
+        if (passengers < capacity){
+            passengers++;
+        }
+    }
+    
+    public void removePassenger(){
+        if (passengers > 0){
+            passengers--;
+        }
+    }
+
+    public void move(){
+        pos[0] += speed * direction[0];
+        pos[1] += speed * direction[1];
+    }
+    
+    public void changeDirection(integer X, integer Y){
+        direction[0] = X;
+        direction[1] = Y;
+    }
+    
+    public void print(string value){
+        system.debug(value);
+    }
+    
+    public void print(integer value){
+        system.debug(value);
+    }
+    
+}

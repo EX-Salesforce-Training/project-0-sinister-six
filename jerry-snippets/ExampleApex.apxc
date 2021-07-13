@@ -1,0 +1,85 @@
+/*
+ * what is apex?
+ * 
+ * proprietary, cloud hosted, java-like, case insensitive, strongly typed, versioned, object oriented, multi-tenant aware, programming language
+ * 
+ * case insensitivity
+ * 	bob
+ * 	Bob
+ * 	BoB
+ *	bOb
+ *  - all the same to Apex
+ * 
+ * even if it is case insensitive, treat as if case sensitive
+ * 
+ * java-like syntatically, but not java
+ * 
+ * cloud-hosted - no local compilation, must be connected to an org in order to use
+ * 
+ * tightly integrated with salesforce, sObjects, DML, SOQL, SOSL
+ * 
+ * Salesforce object Query Langue, salesforce object search language
+ * treat tables as classes, treat col as internal variable, treat row as object
+ * 
+ * economy of scale---
+ * 
+ * 
+ * 
+ * 	ALL APEX CODE EXECUTES IN SYSTEM CONTEXT - USER SECURITY NOT CHECKED
+ * 
+ * any conversion that could result in data loss will not be allowed as implicit typecasting
+ * 
+ * 
+ * 
+ */
+
+public class ExampleApex {
+	//camelCase for variable names
+	//primitive data types
+    Blob binary;
+    Boolean isMonday;
+    Date today;
+    DateTime rightNow;
+    Decimal hourlyWage;
+    Double hourlyWageLong; //64 bit decimal
+    Id edgeCommunicationsId;
+    Integer franceGDP;
+    Long franceGDPLong; //64 bit num
+    Object exampleObj;
+    String emailBody;
+    Time lunchTime;
+    
+	//non-primitive data types
+	sObject salesForceObject;
+	//contact bob;
+    bob__c bob = new bob__c(); //< can retrieve data, cannot alter it
+    
+    //collections
+    List<Contact> bobsList;
+    Set<Contact> bobsTrophyList;
+    //Map<string, string> bob;
+    
+    //enums 
+    //public enum Make{Cheverlet, Ford, Dodge}
+    
+    integer numberOfInstances = 1;
+    string name = 'Greg';
+
+    Public ExampleApex(){
+        system.debug(name);
+        NameChange('Bob');
+        System.debug(name);
+    }
+    
+    //PascalCase for method and class names
+    public string NameChange(string input){
+        string name = input;
+		system.debug(name);        
+        return name;
+    }
+
+    public void UpdateNumOfInstances(integer num){
+        numberOfInstances = num;
+    }
+    
+}

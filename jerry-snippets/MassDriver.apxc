@@ -1,0 +1,12 @@
+public class MassDriver {
+    public void Thrower(){
+        try{
+            Integer i=0;
+            if (i<5) throw new potException('yoooo');
+        } catch (Exception e){
+            System.debug(e.getMessage());
+        } finally {
+            System.debug('doing the thing in case all else fails');
+        }
+    }
+}

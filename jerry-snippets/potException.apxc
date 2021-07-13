@@ -1,0 +1,10 @@
+public class potException extends exception{
+	//exceptions must end in Exception or else
+    public string dingus;
+
+    //Create a custom exception, throw that exception in a method, and in another method that contains a try-catch-finally block, handle it.
+    
+    public void GetCeption(exception e){
+        system.debug('this is a message lol');
+    }
+}

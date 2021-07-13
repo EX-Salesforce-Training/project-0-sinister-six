@@ -1,0 +1,76 @@
+public virtual class Vehicle{
+    public string name {get;set;}
+    public integer size;
+    public integer health = 100;
+	public integer maxSpeed;
+    public integer speed {get; set{
+        if (value > maxSpeed){
+            speed = maxSpeed;
+        }else if(value < 0){
+            speed = 0;
+        }else{
+            speed = value;
+        }
+   		
+    }}
+    public integer passengers {get;set;}
+    public integer capacity{get;set;}
+    public List<integer> pos = new List<integer>();
+	public List<integer> direction = new List<integer>();
+    
+    public static integer instances {get;set;}
+    public enum Mode {AIR, WATER, LAND, SPACE}
+    public Mode curMode {get; set;}
+
+    public Vehicle(){
+		instances++;
+		passengers = 0;
+        pos.add(0);
+        pos.add(0);
+        pos.add(0);
+
+        direction.add(1);
+        direction.add(0);
+        direction.add(0);
+        
+        system.debug('transport initialized');
+    }
+
+    public static void startInstances(){
+        instances = 0;
+    }
+        
+    public void addPassenger(){
+        if (passengers < capacity){
+            passengers++;
+        }
+    }
+    
+    public void removePassenger(){
+        if (passengers > 0){
+            passengers--;
+        }
+    }
+
+    public void move(){
+        pos[0] += speed * direction[0];
+        pos[1] += speed * direction[1];
+    }
+    
+    public void changeDirection(integer X, integer Y){
+        direction[0] = X;
+        direction[1] = Y;
+    }
+    
+    public void print(string value){
+        system.debug(value);
+    }
+    
+    public void print(integer value){
+        system.debug(value);
+    }
+    
+    
+    
+    
+}

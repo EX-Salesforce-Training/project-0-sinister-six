@@ -1,0 +1,105 @@
+public class SpaceShuttle extends Vehicle implements AirTravel, SpaceTravel, LandTravel{
+	//SPAAAAAAAAAAAAAAAAAAAAAAAAAAAAACE
+	public Boolean inOrbit = false;
+
+	public void Orbit(){
+		if (inOrbit){
+			print('Leaving orbit');
+		}else{
+			print('Entering orbit');
+		}
+		inOrbit = !inOrbit;
+	}   
+
+	public SpaceShuttle(){
+		maxSpeed = 17500;
+		curMode = Mode.SPACE;
+		capacity = 6;
+	}
+
+	public void ChangeHeight(integer Z){
+		direction[2] = Z;
+	}
+	
+	public void FlyNorth(){
+		ChangeDirection(1, 0);
+	}
+	
+	public void FlySouth(){
+		ChangeDirection(1, 0);
+	}
+
+	public void FlyEast(){
+		ChangeDirection(1, 0);
+	}
+
+	public void FlyWest(){
+		ChangeDirection(1, 0);
+	}
+
+	
+	public void Climb(){
+		ChangeHeight(1);
+	}
+
+	public void Descend(){
+		ChangeHeight(-1);
+	}
+	
+	public void BarrelRoll(){
+		//shuttles cannot do a barrel roll
+		print('OH GOD WE\'RE GOING DOWN AHHHH');
+	}
+	
+	public void Land(){
+		if (pos[2] < 5){
+			print('Landed Safely');
+		}else{
+			print('OH GOD WE\'RE GOING DOWN AHHHH');
+		}
+	}
+	
+	public void DriveNorth(){
+		ChangeDirection(1, 0);
+	}
+	public void DriveSouth(){
+		ChangeDirection(-1, 0);
+	}
+
+	public void DriveEast(){
+		ChangeDirection(0, 1);
+	}
+
+	public void DriveWest(){
+		ChangeDirection(0, -1);
+	}
+
+
+	public void Stop(){
+		speed = 0;
+	}
+
+	public void Accelerate(){
+		//shuttles cannot accellerate, they must be attached to a rocket
+		print('nothing happens');
+	}
+	
+	public void Launch(){
+		speed = 20;
+		print('3...2...1... LIFTOFF!!!');
+	}
+
+	public void Dock(){
+		speed = 0;
+		print('Attached to space station');
+	}
+	public void PayLoad(){
+		print('released payload');
+	}
+	public void Detach(){
+		print('Released Booster');
+	}
+	public void Splashdown(){
+		print('Wait we\'re not suppose to be in the Ocean AHHHHH');
+	}
+}

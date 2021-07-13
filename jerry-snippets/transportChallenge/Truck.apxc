@@ -1,0 +1,45 @@
+public class Truck extends Vehicle implements LandTravel{
+	protected integer trailer = 0;
+    public Truck(){
+		maxSpeed = 65;
+        curMode = Mode.LAND;
+        capacity = 2;
+    }
+
+    public void AddLoad(){
+        if (trailer < 100){
+	        trailer = 10;
+        }
+    }
+    
+    public void RemoveLoad(){
+        if (trailer > 0){
+	        trailer -= 10;
+        }
+    }
+    
+    public void DriveNorth(){
+        ChangeDirection(1, 0);
+    }
+    public void DriveSouth(){
+        ChangeDirection(-1, 0);
+    }
+
+    public void DriveEast(){
+        ChangeDirection(0, 1);
+    }
+
+    public void DriveWest(){
+        ChangeDirection(0, -1);
+    }
+
+
+    public void Stop(){
+        speed = 0;
+    }
+
+    public void Accelerate(){
+        speed += 1;
+    }
+
+}

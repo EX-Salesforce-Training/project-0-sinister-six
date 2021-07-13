@@ -1,0 +1,30 @@
+public class CruiseShip extends Vehicle implements WaterTravel{
+    public CruiseShip(){
+		maxSpeed = 25;
+        curMode = Mode.WATER;
+        capacity = 3000;
+    }
+    public void SailNorth(){
+        ChangeDirection(1, 0);
+    }
+    public void SailSouth(){
+        ChangeDirection(-1, 0);
+    }
+    public void SailEast(){
+        ChangeDirection(0, 1);
+    }
+    public void SailWest(){
+        ChangeDirection(0, -1);
+    }
+    
+    public void Floating(){
+        if (health < 0){
+            print('oh no we\'re sinking!!!');
+        }else{
+            print('nope still floating!');
+        }
+    }
+    public void Damage(){
+        health -= 10;
+    }
+}

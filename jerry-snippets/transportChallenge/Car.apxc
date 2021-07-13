@@ -1,0 +1,32 @@
+public class Car extends Vehicle implements LandTravel{
+    public Car(){
+		maxSpeed = 45;
+        curMode = Mode.LAND;
+        capacity = 4;
+    }
+    
+    public void DriveNorth(){
+        ChangeDirection(1, 0);
+    }
+    public void DriveSouth(){
+        ChangeDirection(-1, 0);
+    }
+
+    public void DriveEast(){
+        ChangeDirection(0, 1);
+    }
+
+    public void DriveWest(){
+        ChangeDirection(0, -1);
+    }
+
+
+    public void Stop(){
+        speed = 0;
+    }
+
+    public void Accelerate(){
+        speed += 1;
+    }
+    
+}

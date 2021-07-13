@@ -1,0 +1,11 @@
+public interface SpaceTravel {
+
+    void Prep();
+    
+    void Launch();
+    void Dock();
+    void PayLoad();
+    void Detach();
+    void Splashdown();
+    void Orbit();
+}

@@ -1,0 +1,16 @@
+public interface LandTravel {
+
+    void DriveNorth();
+    void DriveSouth();
+    void DriveEast();
+    void DriveWest();
+
+    void GetIn();
+    
+    void Stop();
+
+    void Accelerate();
+    
+    
+    
+}

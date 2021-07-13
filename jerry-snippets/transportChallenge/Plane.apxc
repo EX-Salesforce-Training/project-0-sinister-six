@@ -1,0 +1,77 @@
+public class Plane extends Vehicle implements AirTravel, LandTravel{
+    public Plane(){
+		maxSpeed = 150;
+        curMode = Mode.AIR;
+        capacity = 80;
+    }
+    
+    public void ChangeHeight(integer Z){
+        direction[2] = Z;
+    }
+    
+    public void FlyNorth(){
+        ChangeDirection(1, 0);
+    }
+    
+    public void FlySouth(){
+        ChangeDirection(1, 0);
+    }
+
+    public void FlyEast(){
+        ChangeDirection(1, 0);
+    }
+
+    public void FlyWest(){
+        ChangeDirection(1, 0);
+    }
+
+    
+    public void Climb(){
+        ChangeHeight(1);
+    }
+
+    public void Descend(){
+        ChangeHeight(-1);
+    }
+    
+    public void BarrelRoll(){
+        if (pos[2] > 10){
+            print('Weeeeeee');
+        }else{
+            print('OH GOD WE\'RE GOING DOWN AHHHH');
+        }
+    }
+    
+    public void Land(){
+        if (pos[2] < 5){
+            print('Landed Safely');
+        }else{
+            print('OH GOD WE\'RE GOING DOWN AHHHH');
+        }
+    }
+    
+    public void DriveNorth(){
+        ChangeDirection(1, 0);
+    }
+    public void DriveSouth(){
+        ChangeDirection(-1, 0);
+    }
+
+    public void DriveEast(){
+        ChangeDirection(0, 1);
+    }
+
+    public void DriveWest(){
+        ChangeDirection(0, -1);
+    }
+
+
+    public void Stop(){
+        speed = 0;
+    }
+
+    public void Accelerate(){
+        speed += 1;
+    }
+
+}

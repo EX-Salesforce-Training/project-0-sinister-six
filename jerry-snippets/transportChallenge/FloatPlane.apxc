@@ -1,0 +1,54 @@
+public class FloatPlane extends Vehicle implements WaterTravel, AirTravel{
+    public FloatPlane(){
+		maxSpeed = 150;
+        curMode = Mode.AIR;
+        capacity = 4;
+    }
+
+    public void ChangeHeight(integer Z){
+        direction[2] = Z;
+    }
+    
+    public void FlyNorth(){
+        ChangeDirection(1, 0);
+    }
+    
+    public void FlySouth(){
+        ChangeDirection(1, 0);
+    }
+
+    public void FlyEast(){
+        ChangeDirection(1, 0);
+    }
+
+    public void FlyWest(){
+        ChangeDirection(1, 0);
+    }
+
+    
+    public void Climb(){
+        ChangeHeight(1);
+    }
+
+    public void Descend(){
+        ChangeHeight(-1);
+    }
+    
+    public void BarrelRoll(){
+        if (pos[2] > 10){
+            print('Weeeeeeeeee');
+        }else{
+            print('OH GOD WE\'RE GOING DOWN AHHHH');
+        }
+    }
+    
+    public void Land(){
+        if (pos[2] < 5){
+            print('*Splash* wew another perfect landing');
+        }else{
+            print('OH GOD WE\'RE GOING DOWN AHHHH');
+        }
+    }
+
+    
+}

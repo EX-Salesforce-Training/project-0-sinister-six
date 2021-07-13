@@ -1,0 +1,39 @@
+public class Rocket extends Vehicle implements SpaceTravel{
+	public Boolean inOrbit = false;
+
+    public Rocket(){
+		maxSpeed = 17500;
+        curMode = Mode.SPACE;
+        capacity = 3;
+    }
+
+    public void Orbit(){
+        if (inOrbit){
+            print('Leaving orbit');
+        }else{
+            print('Entering orbit');
+        }
+        inOrbit = !inOrbit;
+    }   
+    
+    public void Launch(){
+        speed = 20;
+        print('3...2...1... LIFTOFF!!!');
+    }
+    
+    public void Dock(){
+        speed = 0;
+        print('Attached to space station');
+    }
+    public void PayLoad(){
+        print('We have no payload');
+    }
+    public void Detach(){
+        print('Released First Stage');
+    }
+    public void Splashdown(){
+        print('Wait we\'re not suppose to be in the Ocean AHHHHH');
+    }
+
+    
+}

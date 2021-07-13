@@ -1,0 +1,12 @@
+public interface WaterTravel {
+	void SailNorth();
+	void SailSouth();
+	void SailEast();
+	void SailWest();
+    
+    void Embark();
+    
+    void Floating();
+    void Damage();
+    
+}
