@@ -1,0 +1,28 @@
+trigger AccountTrigger on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+	Switch on Trigger.OperationType{
+		when BEFORE_INSERT{
+			
+		} 
+		when BEFORE_UPDATE{
+			
+		}
+		when BEFORE_DELETE{
+			AccountTriggerHandler.CheckForDuplicate(trigger.old);
+		}
+		when AFTER_INSERT{
+			
+		}
+		when AFTER_UPDATE{
+			
+		}
+		when AFTER_DELETE{
+			
+		}
+		when AFTER_UNDELETE{
+			
+		}
+		when else{
+			system.debug('how did you get here??');
+		}
+	}
+}

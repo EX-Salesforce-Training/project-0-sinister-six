@@ -1,0 +1,16 @@
+public class ContactTriggerHandler {
+	// thing-trigger-handler
+    public static void CheckForDuplicate(List<Contact> newContacts){
+        Set<string> emailSet = new Set<string>();
+            for(Contact c : newContacts){
+                emailSet.add(c.email);
+            }
+            for(Contact con : [SELECT email FROM Contact WHERE email IN :emailSet]){
+                for (Contact newCon: newContacts){
+                    if(newCon.email == con.email){
+                        newCon.addError('Duplicate Email');//throws dml exception
+                    }
+                }
+            }
+    }
+}

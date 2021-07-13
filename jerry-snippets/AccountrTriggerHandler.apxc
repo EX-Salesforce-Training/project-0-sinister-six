@@ -1,0 +1,22 @@
+public class AccountTriggerHandler {
+	public static void CheckForDuplicate(List<Account> newAccounts)
+		Set<String> notClose = new Set<String>{'Closed Won', 'Closed Lost'};
+		Set<opportunity> oppSet = [SELECT id, AccountId, Stage FROM Opportunity WHERE stage NOT IN :notClose];
+		for(Account a : newAccounts){
+			for (Opportunity opp : oppSet){
+				if (a.id == opp.AccountId){
+					a.addError('Cannot delete an account that hasn\'t been closed');
+				}
+			}
+		}
+		
+		
+			
+		for(Contact con : [SELECT email FROM Contact WHERE email IN :emailSet]){
+			for (Contact newCon: newContacts){
+				if(newCon.email == con.email){
+					newCon.addError('Duplicate Email');//throws dml exception
+				}
+			}
+		}
+}
