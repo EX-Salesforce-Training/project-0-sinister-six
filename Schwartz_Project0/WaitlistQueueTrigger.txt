@@ -1,0 +1,17 @@
+//Waitlist Queue Trigger
+/* 
+ * Trigger put on Passenger object. When a new Passenger object that has a 
+ * waitlist guest record type is created, a number is assigned to that guest 
+ * in queue fashion. That number is referenced when a reserved guest is deleted 
+ * and the first passenger on the waitlist is added to the cruise as a reserved guest.
+ * 
+ * The trigger utilizes the WaitlistQueueTriggerHelper class, which contains the rest
+ * of the logic of the queue implementation.
+*/
+
+trigger WaitListQueueTrigger on Passenger__c (after insert) {
+    
+    WaitlistQueueTriggerHelper.addWaitlistQueue(Trigger.New);
+    
+
+}

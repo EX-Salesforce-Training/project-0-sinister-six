@@ -1,0 +1,35 @@
+//WaitlistQueueTriggerHelper
+/*
+ * Helper class to WaitlistQueueTrigger. Class contains a static method that takes a list of passengers,
+ * presumably the Trigger.New list, and adds a queue number to the newly added waitlist passenger.
+ * 
+ * The method queries the passed argument, passArgs, obtaining only the record type 'Waitlist Guest'
+ * passengers. It then calls a separate querey calling the aggregate function MAX, looking for the max
+ * value for the passenger's cruise. It then loops through the passenger list, and places the queue number one behind
+ * the max value, effectively placing the passenger last in the waitlist.
+ * 
+ * TODO: Double check updating Aggregate result Integer value. May fail, be printing out the same queue value
+ * if not updated in loop. 
+ * Solution: Create map with map<String, Integer> where String is pass.Cruise__r.Id and Integer is value of aggregate
+ * result. Make sure Integer is updated in each loop iteration that it is used, so that the next passenger in list 
+ * gets a higher number, ensuring no duplicates. 
+*/
+
+public class WaitlistQueueTriggerHelper {
+    
+    public static void addWaitlistQueue(List<Passenger__c> passArgs){
+        List<Passenger__c> passList = new List<Passenger__c>(
+    	[SELECT Id, WaitListQueue__c, RecordType.Name, Cruise__r.Id FROM Passenger__c WHERE Id IN :passArgs AND RecordType.Name = 'Waitlist Guest']
+    );
+    
+    Map<String, AggregateResult> d = new Map<String, AggregateResult>(
+            [SELECT Cruise__r.Id, MAX(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id]);
+    for(Passenger__c pass : passList){
+        System.debug(pass.Cruise__r.Id);
+        pass.WaitListQueue__c = Integer.valueOf(d.get(pass.Cruise__r.Id).get('expr0')) + 1;
+    }
+    
+    update passList;
+    }
+
+}

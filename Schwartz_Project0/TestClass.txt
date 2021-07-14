@@ -1,0 +1,18 @@
+//TestClass
+/*
+ * Class used for testing purposes in the developer console.
+ * Should be ignored!!!!!!
+ */
+
+public class TestClass {
+    
+    public static void test(){
+        //List<AggregateResult> d = [SELECT MAX(WaitListQueue__c) FROM Passenger__c ];
+        Map<String, AggregateResult> d = new Map<String, AggregateResult>(
+            [SELECT Cruise__r.Id, MAX(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id]);
+        //System.debug('Size: ' + d.get('a005e000004CCrcAA').get('expr0'));
+        System.debug('Size: ' + d);
+        System.debug('Size: ' + d.get('a005e000004CCrcAAG').get('expr0'));
+    }
+
+}

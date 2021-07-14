@@ -1,0 +1,32 @@
+public class TakingTask {
+    
+    Task bobsTask = new Task();
+    List<Task> taskList = new List<Task>();
+    Contact c = [SELECT OwnerId FROM Contact LIMIT 1];
+    List<Contact> contactsList = new List<Contact>();
+    
+    public void UpdatePhone(){
+        for(Contact con: [SELECT Phone, Account.Phone FROM Contact WHERE Phone = '']){
+            con.Phone = String.valueof(Account.Phone);
+            contactsList.add(con);
+            break;
+        }
+        update contactsList;
+    }
+    
+    public void TaskMethod(){
+        bobsTask.OwnerId = c.OwnerId;
+        for(contact con: [SELECT Email, OwnerId FROM Contact WHERE Email = '']){
+            Task t = new Task();
+            t.OwnerId = con.OwnerId;
+            t.Subject = 'Update Email';
+            t.Description = 'Your email is not up to date. Please add email';
+            taskList.add(t);
+            system.debug(t);
+            break;
+        }
+        insert taskList;
+            
+    }
+
+}
