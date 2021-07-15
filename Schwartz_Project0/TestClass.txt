@@ -6,13 +6,58 @@
 
 public class TestClass {
     
-    public static void test(){
+    public static void TestQueue(){
         //List<AggregateResult> d = [SELECT MAX(WaitListQueue__c) FROM Passenger__c ];
         Map<String, AggregateResult> d = new Map<String, AggregateResult>(
             [SELECT Cruise__r.Id, MAX(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id]);
         //System.debug('Size: ' + d.get('a005e000004CCrcAA').get('expr0'));
         System.debug('Size: ' + d);
         System.debug('Size: ' + d.get('a005e000004CCrcAAG').get('expr0'));
+    }
+    
+    public static void TestDelete(){
+        Map<String, AggregateResult> d = new Map<String, AggregateResult>(
+            [SELECT Cruise__r.Id, MIN(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id]);
+        Integer re = Integer.valueOf(d.get('a005e000004CCrcAAG').get('expr0'));
+        List<Passenger__c> lets = new List<Passenger__c>(
+        	[SELECT WaitListQueue__c, Cruise__r.Id, RecordType.Name FROM Passenger__c WHERE Cruise__r.Id = 'a005e000004CCrcAAG' AND WaitListQueue__c = :re]
+        );
+        System.debug('re: ' + re);
+        System.debug('d Result: ' + d);
+        System.debug('d cruise1: ' + d.get('a005e000004CCrcAAG').get('expr0'));
+        System.debug('lets: ' + lets[0].RecordType.Name);
+    }
+    
+    public static void TestDelete2(){
+        Map<String, AggregateResult> d = new Map<String, AggregateResult>(
+            [SELECT Cruise__r.Id, MAX(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id ORDER BY MAX(WaitListQueue__c)DESC]);
+        System.debug('d Result: ' + d);
+        Map<String, Passenger__c> c = new Map<String, Passenger__c>(
+        	[SELECT Cruise__r.Id, WaitListQueue__c, Name, Cruise__r.Name FROM Passenger__c ORDER BY WaitListQueue__c DESC ]
+        );
+        
+        System.debug('c result: ' + c);
+        System.debug('c resultaaaaaa: ' + c.get('a005e000004CCrcAAG'));
+        /*for (String idKey : c.keyset()) {
+    		Passenger__c a = c.get(idKey);
+    		System.debug(a.Name + ' Cr: ' + a.Cruise__r.Name + ' wait: ' + a.WaitListQueue__c + ' idKey: ' + idKey);
+		}*/
+        List<String> passArgs = new List<String>();
+        passArgs.add('a005e000004CCrcAAG');
+        for (AggregateResult a : [SELECT Cruise__r.Id calias, RecordType.Name, MIN(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id, RecordType.Name HAVING Cruise__r.Id IN :passArgs]){
+            System.debug(a);
+        }
+        
+        Map<String, Passenger__c> waitPassList = new Map<String, Passenger__c>(
+        	[SELECT Id, Cruise__r.Id, RecordType.Name, Room_Number__c FROM Passenger__c 
+             WHERE RecordType.Name = 'Waitlist Guest']
+        );
+        //c
+        for(Passenger__c pass: [SELECT Id, Cruise__r.Id, RecordType.Name, WaitListQueue__c, Room_Number__c FROM Passenger__c 
+                            WHERE RecordType.Name = 'Waitlist Guest']){
+            String key = String.valueOf(pass.Cruise__r.Id) + String.valueOf(pass.WaitListQueue__c);
+        	System.debug(key);                       
+        }
     }
 
 }

@@ -1,0 +1,80 @@
+//Delete Reserved Trigger Helper
+/*
+ * Helper class for DeleteReserverdGuestTrigger.
+ * 
+ * TODO: Query through list, get cruise name
+ *  then get min aggregate value associated with that cruise name
+ * 
+ * Get each Cruise waitlist in order from sql query
+ * loop through passargs updating each passenger
+ * 
+ * Get room number from p
+ * 
+*/
+
+public class DeleteReservedTriggerHelper {
+    
+    public static void DeleteHelper(List<Passenger__c> passArgs){
+        List<Passenger__c> passengersToUpdate = new List<Passenger__c>();
+        /*
+        List<Id> idList = new List<Id>();
+        for(Passenger__c a : passArgs)
+            idList.add(a.Cruise__r.Id);
+        
+		Map<String, Passenger__c> waitPassList = new Map<String, Passenger__c>();
+        for(Passenger__c c: [SELECT Id, Cruise__r.Id, RecordType.Name, WaitListQueue__c, Room_Number__c FROM Passenger__c 
+                            WHERE RecordType.Name = 'Waitlist Guest' AND Cruise__r.Id IN :idList]){
+            String key = Id.valueOf(c.Cruise__r.Id) + String.valueOf(c.WaitListQueue__c);
+        	waitPassList.put(key, c);                        
+        }
+        
+        for(Passenger__c p : passArgs){
+			for (AggregateResult a : [SELECT Cruise__r.Id calias, RecordType.Name, MIN(WaitListQueue__c) 
+                                      FROM Passenger__c GROUP BY Cruise__r.Id, RecordType.Name 
+                                      HAVING Cruise__r.Id = :p.Cruise__r.Id AND RecordType.Name = 'Waitlist Guest']){
+            	System.debug(a.get('expr0'));
+                String key = String.valueOf(a.get('calias')) + String.valueOf(a.get('expr0'));
+                                          
+                Passenger__c passengerChanged = waitPassList.get(key);
+                passengerChanged.Name = 'Changed crazy in trigger';
+                passengerChanged.Room_Number__c = p.Room_Number__c;
+                passengerChanged.RecordTypeId = p.RecordTypeId;
+                passengersToUpdate.add(passengerChanged);
+        	}
+        }
+        //*/
+        //
+        List<Passenger__c> parentArgs = [SELECT Id, Name, RecordType.Name, Cruise__r.Id, Room_Number__c, WaitListQueue__c 
+                                         FROM Passenger__c WHERE Id IN :passArgs];
+        for(Passenger__c c : parentArgs){
+            Passenger__c minWaitPass = c;
+            Double minVal = -1;
+            for( Passenger__c d : [SELECT Id, Name, RecordType.Name, Cruise__r.Id, Room_Number__c, WaitListQueue__c FROM Passenger__c 
+             WHERE RecordType.Name = 'Waitlist Guest' AND Cruise__r.Id = :c.Cruise__r.Id]){
+                 if(minVal == -1 || minVal > d.WaitListQueue__c){
+                     minVal = d.WaitListQueue__c;
+                     minWaitPass = d;
+                 }
+            }
+            minWaitPass.Name = 'Changed innext best qyeye';
+            minWaitPass.RecordTypeId = c.RecordTypeId;
+            minWaitPass.Room_Number__c = c.Room_Number__c;
+            passengersToUpdate.add(minWaitPass);
+        }
+        /*
+        List<Passenger__c> pList = new List<Passenger__c>(
+            [SELECT Id, Name, RecordType.Name, Cruise__r.Id, Room_Number__c FROM Passenger__c 
+             WHERE RecordType.Name = 'Waitlist Guest']);
+        Passenger__c passengerChanged = pList[0];
+        passengerChanged.Name = 'Changed room trigger';
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        passengerChanged.RecordTypeId = passArgs[0].RecordTypeId;
+        passengerChanged.Room_Number__c = passArgs[0].Room_Number__c;
+        passengersToUpdate.add(passengerChanged);
+		//*/
+        update passengersToUpdate;
+        
+    }
+
+}
