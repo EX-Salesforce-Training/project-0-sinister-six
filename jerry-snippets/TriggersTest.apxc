@@ -1,0 +1,129 @@
+@isTest
+public class TriggersTest {
+
+    @isTest
+    static void SingleAfterUndelete(){
+        Account a = new Account(name = 'Bob Account');
+        database.insert(a);
+        database.delete(a);
+        Account acc = [SELECT Id, name FROM Account WHERE name = 'Bob Account' ALL ROWS][0];
+
+        database.undelete(a);
+
+		Task t = [SELECT WhoID FROM Task];
+        system.assert(t!=null);
+        system.assertEquals('Please update and validate.', t.subject);
+    }
+
+    @isTest
+    static void BulkAfterUndeleteTest(){
+        List<Account> accList = new List<Account>();
+        for (integer i = 0; i < 10; i++){
+            Account a = new Account(name = 'Bob' + i);
+            accList.add(a);
+        }
+        database.insert(accList);
+        database.delete(accList);
+        List<Account> accList2 = [SELECT Id, name FROM Account WHERE name LIKE 'Bob%' ALL ROWS];
+        try {
+            database.undelete(accList2);
+        } catch(exception e){
+            //bleh
+        }
+    }
+
+    @isTest
+    static void NegSingleAfterUndelete(){
+        Account a = new Account(name = 'Bob Account');
+        database.insert(a);
+        try{
+            database.undelete(a);
+        } catch(exception e){
+
+        }
+    }
+
+    @isTest
+    static void NegBulkAfterUndeleteTest(){
+        List<Account> accList = new List<Account>();
+        for (integer i = 0; i < 10; i++){
+            Account a = new Account(name = 'Bob' + i);
+            accList.add(a);
+        }
+        database.insert(accList);
+        try {
+            database.undelete(accList);
+        } catch(exception e){
+            //bleh
+        }
+    }
+
+    @isTest
+    static  void SingleBeforeInsert(){
+        Account newAcc = new Account(name='bob account');
+        Contact newCon = new Contact();
+        newAcc.site = 'gmail.com';
+        newCon.email = 'Bob@gmail.com';
+        database.insert(newAcc);
+        database.insert(newCon);
+    }
+    
+    @isTest
+    static void BulkBeforeInsert(){
+        List<Account> accList = new List<Account>();
+        List<Contact> conList = new List<Contact>();
+        for(integer x = 0; x  < 20; x++){
+            Account a = new Account(name = 'bob %' + x);
+            a.site = 'gmail.com';
+			accList.add(a);
+        }
+		database.insert(accList);
+        for (integer x = 0; x < 20; x++){
+	        Contact c = new Contact();
+            c.email = 'Bob' + x + '@gmail.com';
+            conList = new List<Contact>();
+        }
+        database.insert(conList);
+
+    }
+
+    @isTest
+    static  void NegSingleBeforeInsert(){
+        Account newAcc = new Account(name='bob account');
+        Contact newCon = new Contact();
+        newAcc.site = 'gmail2.com';
+        newCon.email = 'Bob@gmail.com';
+        database.insert(newAcc);
+        database.insert(newCon);
+    }
+    
+    @isTest
+    static void NegBulkBeforeInsert(){
+        List<Account> accList = new List<Account>();
+        List<Contact> conList = new List<Contact>();
+        for(integer x = 0; x  < 20; x++){
+            Account a = new Account(name = 'bob %' + x);
+            a.site = 'gmail2.com';
+			accList.add(a);
+        }
+		database.insert(accList);
+        for (integer x = 0; x < 20; x++){
+	        Contact c = new Contact();
+            c.email = 'Bob' + x + '@gmail.com';
+            conList = new List<Contact>();
+        }
+        database.insert(conList);
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+

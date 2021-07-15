@@ -19,7 +19,7 @@ trigger AccountTrigger on Account (before insert, before update, before delete, 
 			
 		}
 		when AFTER_UNDELETE{
-			
+			AccountTriggerHandler.CreateValidationTask(trigger.new);
 		}
 		when else{
 			system.debug('how did you get here??');

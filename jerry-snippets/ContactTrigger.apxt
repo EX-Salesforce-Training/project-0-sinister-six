@@ -4,6 +4,7 @@ trigger ContactTrigger on Contact (before insert, before update, before delete, 
     Switch on Trigger.OperationType{
         when BEFORE_INSERT{
 			ContactTriggerHandler.CheckForDuplicate(trigger.new);
+            ContactTriggerHandler.CompareEmailDomain(trigger.new);
         } 
         when BEFORE_UPDATE{
             

@@ -19,4 +19,17 @@ public class AccountTriggerHandler {
 				}
 			}
 		}
+
+    public static void CreateValidationTask(List<Account> accList){
+        List<Task> taskList = new List<Task>();
+        for(Account a: accList){
+            task newTask = new task();
+            newTask.subject = 'Please update and validate.';
+            newTask.priority = 'High';
+            newTask.status = 'Not Started';
+            newTask.whoId = a.Id;
+            taskList.add(newTask);
+        }
+        database.insert(taskList);
+    }
 }

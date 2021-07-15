@@ -13,4 +13,42 @@ public class ContactTriggerHandler {
                 }
             }
     }
+    public static void CompareEmailDomain(List<Contact> conList){
+        //contact email <- only contains normal string
+        //account site
+        /*
+         * get list of domains by email.split(@)[1]
+         * domainMap[domain] = list<contact>;
+         * list<string> = domain names;
+         * List<account> accList = [SELECT id, site FROM Account WHERE site in : domainnames];
+         *  for account a: accList{
+        *        for contact c : domainMap[a.site]{
+        *            c.ownerId = a.id;
+        *        }
+         *}
+         * please disable screen sharing
+         */
+
+        List<String> domainNames = new List<String>();
+        Map<String, List<Contact>> conMap = new Map<String, List<Contact>>();
+
+        for(Contact c : conList){
+            String domain = c.email.split('@')[1];
+
+            domainNames.add(domain);
+            if(!(conMap.containsKey(domain))){
+                conMap.put(domain, new List<Contact>());
+            }
+            conMap.get(domain).add(c);
+        }
+
+        List<Account> accList = [SELECT id, site FROM Account WHERE site in : domainNames];
+
+        for(Account a: accList){
+            for(contact c : conMap.get(a.site)){
+                c.ownerId = a.id;
+            }
+        }
+
+    }
 }
