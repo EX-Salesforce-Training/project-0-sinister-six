@@ -1,0 +1,52 @@
+//Waitlist Queue Trigger
+/* 
+ * Trigger put on Passenger object. When a new Passenger object that has a 
+ * waitlist guest record type is created, a number is assigned to that guest 
+ * in queue fashion. That number is referenced when a reserved guest is deleted 
+ * and the first passenger on the waitlist is added to the cruise as a reserved guest.
+ * 
+ * The trigger utilizes the WaitlistQueueTriggerHelper class, which contains the rest
+ * of the logic of the queue implementation.
+*/
+trigger WaitListQueueTrigger on Passenger__c (before insert, before delete, after insert) {
+    switch on Trigger.OperationType{
+        when BEFORE_INSERT{
+            System.debug('enacting custom trigger');
+            //CheckShipCapacityTriggerHelper.CheckShipCapacity(Trigger.New);
+            //WaitlistQueueTriggerHelper.addWaitlistQueue(Trigger.New);
+        }
+        when BEFORE_DELETE{
+            DeleteReservedTriggerHelper.DeleteHelper(Trigger.old);
+        } when AFTER_INSERT{
+            //WaitlistQueueTriggerHelper.addWaitlistQueue(Trigger.New);
+            //CheckShipCapacityTriggerHelper.CheckShipCapacity(Trigger.New);
+            ///*
+            List<Passenger__c> waitListGuests = new List<Passenger__c>();
+            List<Passenger__c> regGuests = new List<Passenger__c>();
+            for (Passenger__c c : Trigger.New){
+                Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Waitlist Guest').getRecordTypeId();
+                System.debug('Running inside trigger: ' + c.RecordTypeId);
+                System.debug('recordiduniv: ' + recordTypeId);
+                if(c.RecordTypeId == recordTypeId){
+                    System.debug('runing inside if');
+                    waitListGuests.add(c);
+                }
+                else{
+                    System.debug('running else statement');
+                    regGuests.add(c);
+           	 	}
+                System.debug('waitListGuests: ' + waitListGuests);
+                System.debug('RegGuests: ' + regGuests);
+                if(waitListGuests.size() > 0)
+                    WaitlistQueueTriggerHelper.addWaitlistQueue(waitListGuests);
+                if(regGuests.size() > 0)
+                    CheckShipCapacityTriggerHelper.CheckShipCapacity(regGuests);
+            }
+			//*/
+        }
+        when else{
+            //Default: Do nothing
+        }
+    }
+}

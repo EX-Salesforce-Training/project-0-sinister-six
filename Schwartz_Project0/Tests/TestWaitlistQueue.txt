@@ -1,0 +1,23 @@
+@isTest
+private class TestWaitlistQueue {
+    @isTest static void TestAddWaitlistGuest(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=1);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Waitlist Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Test.startTest();
+        Database.SaveResult result = Database.insert(p, false);
+        Test.stopTest();
+        
+        //System.assert(result.isSuccess());
+    }
+}

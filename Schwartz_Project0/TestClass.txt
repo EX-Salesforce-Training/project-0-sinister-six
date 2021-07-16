@@ -59,5 +59,29 @@ public class TestClass {
         	System.debug(key);                       
         }
     }
+    
+    public static void TestCapCheck(){
+        AggregateResult[] countResult = [SELECT Cruise__r.Id calias, COUNT(id) counter, RecordType.Name ralias FROM Passenger__c
+                                             GROUP BY Cruise__r.Id, RecordType.Name HAVING RecordType.Name != 'Waitlist Guest'];
+        System.debug(countResult);
+        System.debug(countResult[0]);
+        
+        Map<String, Integer> mapOfCounts = new Map<String, Integer>();
+        mapOfCounts.put('a005e000004CCrcAAG', 0);
+        mapOfCounts.put('a005e000004plEpAAI', 0);
+        for(AggregateResult a: countResult){
+            String str = String.valueOf(a.get('calias'));
+            Integer i = mapOfCounts.get(str);
+            Integer j = Integer.valueOf(a.get('counter'));
+            mapOfCounts.put(str, i + j);
+        }
+        
+        System.debug(mapOfCounts);
+        
+        for(Passenger__c c : [SELECT Id, Cruise__r.Id, Cruise__r.Ship__r.Capacity__c FROM Passenger__c]){
+            System.debug(c);
+            System.debug(Integer.valueOf(c.Cruise__r.Ship__r.Capacity__c));
+        }
+    }
 
 }

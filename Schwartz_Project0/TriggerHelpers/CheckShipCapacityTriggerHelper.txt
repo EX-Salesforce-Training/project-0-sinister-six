@@ -1,0 +1,55 @@
+//CheckShipCapacityTriggerHelper
+/*
+ * Helper class has a static method that takes in a list from trigger.new and checks if the passenger
+ * count has reached ship ship capacity, and will throw an addError if it has.
+ * 
+ * TODO: add List, loop through list, get ship and cruise associated with the passenger  
+ * Create a map key is CruiseID value is integer of count that is incrementable
+*/
+public class CheckShipCapacityTriggerHelper {
+    
+    public static void CheckShipCapacity(List<Passenger__c> passArgs){
+        System.debug('Running custom check ship capacity');
+        System.debug('PassArgs: ' + passArgs);
+        List<Passenger__c> parentArgs = new List<Passenger__c>(
+        	[SELECT Id, Cruise__r.Id, Cruise__r.Ship__r.Capacity__c FROM Passenger__c WHERE Id IN :passArgs]
+        );
+        //for(Passenger__c c : [SELECT Id, Cruise__r.Id, Cruise__r.Ship__r.Capacity__c FROM Passenger__c WHERE Id IN :passArgs]){
+         //   parentArgs.add(c);
+        //}
+        System.debug('Parent Args: ' + parentArgs);
+        List<Id> parentIds = new List<Id>();
+        for (Passenger__c c : parentArgs)
+            parentIds.add(c.Cruise__r.Id);
+        AggregateResult[] countResult = [SELECT Cruise__r.Id calias, count(id) counter, RecordType.Name FROM Passenger__c
+                                             GROUP BY Cruise__r.Id, RecordType.Name 
+                                         	 HAVING Cruise__r.Id IN :parentIds
+                                             AND RecordType.Name != 'Waitlist Guest'];
+        Map<String, Integer> mapOfCounts = new Map<String, Integer>();
+        for(Id i : parentIds)
+            mapOfCounts.put(String.valueOf(i), 0);
+        for(AggregateResult a: countResult){
+            String str = String.valueOf(a.get('calias'));
+            Integer i = mapOfCounts.get(str);
+            Integer j = Integer.valueOf(a.get('counter'));
+            mapOfCounts.put(str, i + j);
+        }
+        System.debug('CountResult: ' + countResult);
+        System.debug('MapOfCounts: ' + mapOfCounts);
+        
+        for(Passenger__c p : parentArgs){
+           //get ship capacit from p 
+           //get cruise id and insert into map
+           //make comparison
+           //if >= addereror message
+           Integer cap = Integer.valueOf(p.Cruise__r.Ship__r.Capacity__c);
+           Integer count = mapOfCounts.get(String.valueOf(p.Cruise__r.Id));
+           System.debug('cap: ' + cap);
+           System.debug('count: ' + count);
+           if(count >= cap)
+               passArgs[0].addError('Cannot add Passenger. Ship has reached full capacity already!!!');
+        }
+        
+    }
+
+}
