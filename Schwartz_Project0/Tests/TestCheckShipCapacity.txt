@@ -1,0 +1,153 @@
+@isTest
+private class TestCheckShipCapacity {
+	
+    @isTest static void TestCheckSingle(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=1);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Test.startTest();
+        Database.SaveResult result = Database.insert(p);
+        Test.stopTest();
+        
+        System.assert(result.isSuccess());
+    }
+    
+    @isTest static void TestCheckSingleFail(){
+        Ship__c s = new Ship__c(Name='Shipt2', Capacity__c=1);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise t2');
+        c.Name = 'Cruise t1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Passenger__c p = new Passenger__c(Name='Reserved1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='Reserved2');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        insert p;
+        
+        Test.startTest();
+        Database.SaveResult result = Database.insert(p2, false);
+        Test.stopTest();
+        
+        System.assert(!result.isSuccess());
+    }
+    
+    @isTest static void TestCheckTwoFail(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=1);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='wait1');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        
+        Test.startTest();
+        Database.SaveResult result = Database.insert(p);
+        Database.SaveResult resultFailed = Database.insert(p2, false);
+        Test.stopTest();
+        
+        System.assert(result.isSuccess());
+        System.assertEquals('Cannot add Passenger. Ship has reached full capacity already!!!', resultFailed.getErrors()[0].getMessage());
+    }
+    
+    @isTest static void TestCheckListFail(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=2);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='wait1');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        
+        Passenger__c p3 = new Passenger__c(Name='wait1');
+        p3.Cruise__c = c.Id;
+        p3.RecordTypeId = recordTypeId;
+        
+        List<Passenger__c> passList = new List<Passenger__c>();
+        passList.add(p);
+        passList.add(p2);
+        passList.add(p3);
+        
+        Test.startTest();
+        List<Database.Saveresult> result = Database.insert(passList, false);
+        Test.stopTest();
+        
+        //System.debug(result[0].getErrors()[0].getMessage());
+        System.assert(!result[0].isSuccess());
+        System.assert(!result[1].isSuccess());
+        System.assert(!result[2].isSuccess());
+        //System.assertEquals('Cannot add Passenger. Ship has reached full capacity already!!!', result[2].getErrors()[0].getMessage());
+    }
+    
+    @isTest static void TestCheckListSuccess(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=3);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='wait1');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        
+        Passenger__c p3 = new Passenger__c(Name='wait1');
+        p3.Cruise__c = c.Id;
+        p3.RecordTypeId = recordTypeId;
+        
+        List<Passenger__c> passList = new List<Passenger__c>();
+        passList.add(p);
+        passList.add(p2);
+        passList.add(p3);
+        
+        Test.startTest();
+        List<Database.Saveresult> result = Database.insert(passList, false);
+        Test.stopTest();
+        
+        //System.debug(result[0].getErrors()[0].getMessage());
+        System.assert(result[0].isSuccess());
+        System.assert(result[1].isSuccess());
+        System.assert(result[2].isSuccess());
+        //System.assertEquals('Cannot add Passenger. Ship has reached full capacity already!!!', result[2].getErrors()[0].getMessage());
+    }
+}

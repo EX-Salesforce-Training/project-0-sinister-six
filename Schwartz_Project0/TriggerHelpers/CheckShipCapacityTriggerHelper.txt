@@ -5,19 +5,26 @@
  * 
  * TODO: add List, loop through list, get ship and cruise associated with the passenger  
  * Create a map key is CruiseID value is integer of count that is incrementable
+ * 
+ * NOTE: Method fired AFTER_INSERT, aggregate result is returning capacity 1 on first insert. 
+ * To Remedy, check shipCapacity + 1
 */
 public class CheckShipCapacityTriggerHelper {
     
     public static void CheckShipCapacity(List<Passenger__c> passArgs){
-        System.debug('Running custom check ship capacity');
-        System.debug('PassArgs: ' + passArgs);
+        //System.debug('Running custom check ship capacity');
+        //System.debug('PassArgs: ' + passArgs);
+        Map<Id, Passenger__c> passArgsMap = new Map<Id, Passenger__c>();
+        for(Passenger__c p : passArgs){
+            passArgsMap.put(p.Id, p);
+        }
         List<Passenger__c> parentArgs = new List<Passenger__c>(
         	[SELECT Id, Cruise__r.Id, Cruise__r.Ship__r.Capacity__c FROM Passenger__c WHERE Id IN :passArgs]
         );
         //for(Passenger__c c : [SELECT Id, Cruise__r.Id, Cruise__r.Ship__r.Capacity__c FROM Passenger__c WHERE Id IN :passArgs]){
          //   parentArgs.add(c);
         //}
-        System.debug('Parent Args: ' + parentArgs);
+        //System.debug('Parent Args: ' + parentArgs);
         List<Id> parentIds = new List<Id>();
         for (Passenger__c c : parentArgs)
             parentIds.add(c.Cruise__r.Id);
@@ -25,6 +32,7 @@ public class CheckShipCapacityTriggerHelper {
                                              GROUP BY Cruise__r.Id, RecordType.Name 
                                          	 HAVING Cruise__r.Id IN :parentIds
                                              AND RecordType.Name != 'Waitlist Guest'];
+        //System.debug('AggCoutResult: ' + countResult);
         Map<String, Integer> mapOfCounts = new Map<String, Integer>();
         for(Id i : parentIds)
             mapOfCounts.put(String.valueOf(i), 0);
@@ -34,8 +42,9 @@ public class CheckShipCapacityTriggerHelper {
             Integer j = Integer.valueOf(a.get('counter'));
             mapOfCounts.put(str, i + j);
         }
-        System.debug('CountResult: ' + countResult);
-        System.debug('MapOfCounts: ' + mapOfCounts);
+        //System.debug('CountResult: ' + countResult);
+        //System.debug('MapOfCounts: ' + mapOfCounts);
+        //System.debug('Parentargs: ' + parentArgs);
         
         for(Passenger__c p : parentArgs){
            //get ship capacit from p 
@@ -44,10 +53,12 @@ public class CheckShipCapacityTriggerHelper {
            //if >= addereror message
            Integer cap = Integer.valueOf(p.Cruise__r.Ship__r.Capacity__c);
            Integer count = mapOfCounts.get(String.valueOf(p.Cruise__r.Id));
-           System.debug('cap: ' + cap);
-           System.debug('count: ' + count);
-           if(count >= cap)
-               passArgs[0].addError('Cannot add Passenger. Ship has reached full capacity already!!!');
+           //System.debug('cap: ' + cap);
+           //System.debug('count: ' + count);
+            if(count >= cap + 1){
+                System.debug('ERRORERROR: THIS TEST HAS FAILED. SHOULD RETURN ERROR');
+               passArgsMap.get(p.Id).addError('Cannot add Passenger. Ship has reached full capacity already!!!');
+            }
         }
         
     }

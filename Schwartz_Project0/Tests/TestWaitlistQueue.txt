@@ -1,7 +1,7 @@
 @isTest
 private class TestWaitlistQueue {
-    @isTest static void TestAddWaitlistGuest(){
-        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=1);
+    @isTest static void TestAddWaitlistGuestSinlgle(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=2);
         insert s;
         Cruise__c c = new Cruise__c(Name='Cruise 1');
         c.Name = 'Cruise 1';
@@ -15,9 +15,93 @@ private class TestWaitlistQueue {
         p.RecordTypeId = recordTypeId;
         
         Test.startTest();
-        Database.SaveResult result = Database.insert(p, false);
+        Database.SaveResult result = Database.insert(p);//set to false
         Test.stopTest();
         
-        //System.assert(result.isSuccess());
+        List<Passenger__c> pList = new List<Passenger__c>(
+        	[SELECT Id, WaitListQueue__c FROM Passenger__c]
+        );
+        System.debug('PASSENGER SINGLE WAITLIST RESULTS: ' + pList);
+        System.assert(result.isSuccess());
+        
+        System.assertEquals(1, pList[0].WaitListQueue__c);
+    }
+    
+    @isTest static void TestAddWaitlistGuestMultiple(){
+        //Results of test dictate that  each insert happens separetely apart from each other.
+        //The trigger fires for each insert separetely
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=2);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Waitlist Guest').getRecordTypeId();
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='wait2');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        
+        Passenger__c p3 = new Passenger__c(Name='wait3');
+        p3.Cruise__c = c.Id;
+        p3.RecordTypeId = recordTypeId;
+        
+        Test.startTest();
+        Database.SaveResult result = Database.insert(p);//set to false
+        Database.SaveResult result2 = Database.insert(p2);//set to false
+        Database.SaveResult result3 = Database.insert(p3);//set to false
+        Test.stopTest();
+        
+        System.assert(result.isSuccess());
+        System.assert(result2.isSuccess());
+        System.assert(result3.isSuccess());
+        
+        
+    }
+    
+    @isTest static void TestAddWaitlistGuestList(){
+        //Results of test dictate that  each insert happens separetely apart from each other.
+        //The trigger fires for each insert separetely
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=2);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        //List<Cruise__c> cList = new List<Cruise__c>([SELECT Id FROM Cruise__c]);
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Waitlist Guest').getRecordTypeId();
+        Passenger__c p = new Passenger__c(Name='wait1');
+        p.Cruise__c = c.Id;
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='wait2');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        
+        Passenger__c p3 = new Passenger__c(Name='wait3');
+        p3.Cruise__c = c.Id;
+        p3.RecordTypeId = recordTypeId;
+        List<Passenger__c> pList = new List<Passenger__c>();
+        pList.add(p);
+        pList.add(p2);
+        pList.add(p3);
+        
+        Test.startTest();
+        List<Database.Saveresult> result = Database.insert(pList, false);//set to false
+        //Database.SaveResult result2 = Database.insert(p2);//set to false
+        //Database.SaveResult result3 = Database.insert(p3);//set to false
+        Test.stopTest();
+        
+        System.assert(result[0].isSuccess());
+        //System.assert(result2.isSuccess());
+        //System.assert(result3.isSuccess());
+        
+        
     }
 }

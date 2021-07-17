@@ -11,7 +11,7 @@
 trigger WaitListQueueTrigger on Passenger__c (before insert, before delete, after insert) {
     switch on Trigger.OperationType{
         when BEFORE_INSERT{
-            System.debug('enacting custom trigger');
+            //System.debug('enacting custom trigger');
             //CheckShipCapacityTriggerHelper.CheckShipCapacity(Trigger.New);
             //WaitlistQueueTriggerHelper.addWaitlistQueue(Trigger.New);
         }
@@ -26,23 +26,23 @@ trigger WaitListQueueTrigger on Passenger__c (before insert, before delete, afte
             for (Passenger__c c : Trigger.New){
                 Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
                   .get('Waitlist Guest').getRecordTypeId();
-                System.debug('Running inside trigger: ' + c.RecordTypeId);
-                System.debug('recordiduniv: ' + recordTypeId);
+                //System.debug('Running inside trigger: ' + c.RecordTypeId);
+                //System.debug('recordiduniv: ' + recordTypeId);
                 if(c.RecordTypeId == recordTypeId){
-                    System.debug('runing inside if');
+                    //System.debug('runing inside if');
                     waitListGuests.add(c);
                 }
                 else{
-                    System.debug('running else statement');
+                    //System.debug('running else statement');
                     regGuests.add(c);
            	 	}
-                System.debug('waitListGuests: ' + waitListGuests);
-                System.debug('RegGuests: ' + regGuests);
-                if(waitListGuests.size() > 0)
-                    WaitlistQueueTriggerHelper.addWaitlistQueue(waitListGuests);
-                if(regGuests.size() > 0)
-                    CheckShipCapacityTriggerHelper.CheckShipCapacity(regGuests);
             }
+            //System.debug('waitListGuests: ' + waitListGuests);
+            //System.debug('RegGuests: ' + regGuests);
+            if(waitListGuests.size() > 0)
+                WaitlistQueueTriggerHelper.addWaitlistQueue(waitListGuests);
+            if(regGuests.size() > 0)
+                CheckShipCapacityTriggerHelper.CheckShipCapacity(regGuests);
 			//*/
         }
         when else{

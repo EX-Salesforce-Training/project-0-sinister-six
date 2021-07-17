@@ -1,0 +1,122 @@
+@isTest
+private class TestDeleteReserved {
+    
+    @isTest static void DeleteSingle(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=5);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        
+        Passenger__c p = new Passenger__c(Name='Reserved1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        Id waitId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Waitlist Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='Reserved2');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        p2.Room_Number__c = 'S111';
+        insert p;
+        insert p2;
+        
+        Passenger__c w1 = new Passenger__c(Name='Wait1');
+        w1.Cruise__c = c.Id;
+        w1.RecordTypeId = waitId;
+        w1.WaitListQueue__c = 1;
+        insert w1;
+        
+        for(Passenger__c pTemp : [SELECT Id, Name, RecordType.Name, Room_Number__c FROM Passenger__c]){
+            System.debug('!!!!!!!!!!!!BEFORE PASSENGER DELETE TEST:');
+            System.debug(pTemp);
+        }
+        
+        
+        Test.startTest();
+        Database.DeleteResult result = Database.delete(p2);
+        Test.stopTest();
+        
+        for(Passenger__c pTemp : [SELECT Id, Name, RecordType.Name, Room_Number__c FROM Passenger__c]){
+            System.debug('!!!!!!!!!!!!AFTER PASSENGER DELETE:');
+            System.debug(pTemp);
+        }
+        List<Passenger__c> pList = new List<Passenger__c>(
+            [SELECT Id, Name, RecordType.Name, Room_Number__c FROM Passenger__c]
+        );
+        
+        system.assert(result.isSuccess());
+        system.assertEquals(pList[0].RecordTypeId, recordTypeId);
+        system.assertEquals(pList[1].RecordTypeId, recordTypeId);
+
+    }
+    
+    @isTest static void DeleteList(){
+        Ship__c s = new Ship__c(Name='Ship1', Capacity__c=9);
+        insert s;
+        Cruise__c c = new Cruise__c(Name='Cruise 1');
+        c.Name = 'Cruise 1';
+        c.Ship__c = s.Id;
+        insert c;
+        
+        Passenger__c p = new Passenger__c(Name='Reserved1');
+        p.Cruise__c = c.Id;
+        Id recordTypeId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Reserved Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        Id waitId = Schema.SObjectType.Passenger__c.getRecordTypeInfosByName()
+                  .get('Waitlist Guest').getRecordTypeId();
+        p.RecordTypeId = recordTypeId;
+        
+        Passenger__c p2 = new Passenger__c(Name='Reserved2');
+        p2.Cruise__c = c.Id;
+        p2.RecordTypeId = recordTypeId;
+        p2.Room_Number__c = 'S111';
+        insert p;
+        insert p2;
+        
+        Passenger__c w1 = new Passenger__c(Name='Wait1');
+        w1.Cruise__c = c.Id;
+        w1.RecordTypeId = waitId;
+        w1.WaitListQueue__c = 1;
+        insert w1;
+        
+        Passenger__c w2 = new Passenger__c(Name='Wait2');
+        w2.Cruise__c = c.Id;
+        w2.RecordTypeId = waitId;
+        w2.WaitListQueue__c = 2;
+        insert w2;
+        
+        for(Passenger__c pTemp : [SELECT Id, Name, RecordType.Name, Room_Number__c FROM Passenger__c]){
+            System.debug('!!!!!!!!!!!!BEFORE PASSENGER DELETE TEST:');
+            System.debug(pTemp);
+        }
+        
+        
+        Test.startTest();
+        List<Passenger__c> pDeleteList = new List<Passenger__c>();
+        pDeleteList.add(p);
+        pDeleteList.add(p2);
+        List<Database.DeleteResult> result = Database.delete(pDeleteList);
+        Test.stopTest();
+        
+        for(Passenger__c pTemp : [SELECT Id, Name, RecordType.Name, Room_Number__c FROM Passenger__c]){
+            System.debug('!!!!!!!!!!!!AFTER PASSENGER DELETE:');
+            System.debug(pTemp);
+        }
+        List<Passenger__c> pList = new List<Passenger__c>(
+            [SELECT Id, Name, RecordType.Name, Room_Number__c FROM Passenger__c]
+        );
+        
+        system.assert(result[0].isSuccess());
+        system.assert(result[1].isSuccess());
+        system.assertEquals(pList[0].RecordTypeId, recordTypeId);
+        system.assertEquals(pList[1].RecordTypeId, recordTypeId);
+
+    }
+
+}

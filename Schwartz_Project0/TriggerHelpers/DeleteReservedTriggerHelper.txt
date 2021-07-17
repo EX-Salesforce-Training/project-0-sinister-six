@@ -46,20 +46,26 @@ public class DeleteReservedTriggerHelper {
         //
         List<Passenger__c> parentArgs = [SELECT Id, Name, RecordType.Name, Cruise__r.Id, Room_Number__c, WaitListQueue__c 
                                          FROM Passenger__c WHERE Id IN :passArgs];
+        Map<Id, Integer> mapOfMins = new Map<Id, Integer>();
+        
         for(Passenger__c c : parentArgs){
             Passenger__c minWaitPass = c;
             Double minVal = -1;
             for( Passenger__c d : [SELECT Id, Name, RecordType.Name, Cruise__r.Id, Room_Number__c, WaitListQueue__c FROM Passenger__c 
              WHERE RecordType.Name = 'Waitlist Guest' AND Cruise__r.Id = :c.Cruise__r.Id]){
-                 if(minVal == -1 || minVal > d.WaitListQueue__c){
+                 //String key = Id.valueOf(c.Cruise__r.Id) + String.valueOf(c.WaitListQueue__c);
+                 if((minVal == -1 || minVal > d.WaitListQueue__c) && !mapOfMins.containsKey(d.Id)){
                      minVal = d.WaitListQueue__c;
                      minWaitPass = d;
                  }
             }
-            minWaitPass.Name = 'Changed innext best qyeye';
-            minWaitPass.RecordTypeId = c.RecordTypeId;
-            minWaitPass.Room_Number__c = c.Room_Number__c;
-            passengersToUpdate.add(minWaitPass);
+            if(minWaitPass != null){
+                mapOfMins.put(minWaitPass.Id, -1);
+            	minWaitPass.Name = 'Changed innext best qyeye';
+            	minWaitPass.RecordTypeId = c.RecordTypeId;
+            	minWaitPass.Room_Number__c = c.Room_Number__c;
+            	passengersToUpdate.add(minWaitPass);
+            }
         }
         /*
         List<Passenger__c> pList = new List<Passenger__c>(
@@ -73,6 +79,7 @@ public class DeleteReservedTriggerHelper {
         passengerChanged.Room_Number__c = passArgs[0].Room_Number__c;
         passengersToUpdate.add(passengerChanged);
 		//*/
+		System.debug('Before updatetolist: ' + passengersToUpdate);
         update passengersToUpdate;
         
     }

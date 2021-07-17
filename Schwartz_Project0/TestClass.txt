@@ -5,7 +5,7 @@
  */
 
 public class TestClass {
-    
+    /*
     public static void TestQueue(){
         //List<AggregateResult> d = [SELECT MAX(WaitListQueue__c) FROM Passenger__c ];
         Map<String, AggregateResult> d = new Map<String, AggregateResult>(
@@ -38,10 +38,11 @@ public class TestClass {
         
         System.debug('c result: ' + c);
         System.debug('c resultaaaaaa: ' + c.get('a005e000004CCrcAAG'));
-        /*for (String idKey : c.keyset()) {
+        *//*for (String idKey : c.keyset()) {
     		Passenger__c a = c.get(idKey);
     		System.debug(a.Name + ' Cr: ' + a.Cruise__r.Name + ' wait: ' + a.WaitListQueue__c + ' idKey: ' + idKey);
 		}*/
+    /*
         List<String> passArgs = new List<String>();
         passArgs.add('a005e000004CCrcAAG');
         for (AggregateResult a : [SELECT Cruise__r.Id calias, RecordType.Name, MIN(WaitListQueue__c) FROM Passenger__c GROUP BY Cruise__r.Id, RecordType.Name HAVING Cruise__r.Id IN :passArgs]){
@@ -83,5 +84,5 @@ public class TestClass {
             System.debug(Integer.valueOf(c.Cruise__r.Ship__r.Capacity__c));
         }
     }
-
+*/
 }
