@@ -1,0 +1,26 @@
+trigger StudentTrigger on Student__c (before insert, before update, before delete, after delete, after undelete, after update, after insert) {
+   switch on trigger.operationType{
+        when BEFORE_INSERT{
+            StudentTriggerHandler.checkStatus(trigger.new);
+        }
+        when BEFORE_UPDATE{
+            StudentTriggerHandler.checkStatus(trigger.new);
+
+        }
+        When BEFORE_DELETE{
+            
+        }
+        when AFTER_INSERT{
+             //StudentTriggerHandler.checkStatus(trigger.old);
+        }
+        when AFTER_UPDATE{
+            
+        }
+        when AFTER_DELETE{
+            
+        }
+        when AFTER_UNDELETE{
+            
+        }
+    }
+}
