@@ -1,0 +1,15 @@
+@isTest(SeeAllData=true)
+private class TestStudentTrigger {
+        @isTest static void TestStudentEligibility(){
+     	
+        Student__c s = new Student__c(Name='Test12345', GPA__c=2);
+        insert s;
+        String st;
+        Student__c ac = [SELECT Name, RYSP_STATUS__c from Student__c WHERE Name=:'Test12345'];
+            if(ac.RYSP_STATUS__c == 'NOT ELIGIBLE'){
+                st='NOT ELIGIBLE';
+            } else 
+              {st ='ELIGIBLE';}
+        System.assertEquals(st, ac.RYSP_STATUS__c);
+        }
+}
