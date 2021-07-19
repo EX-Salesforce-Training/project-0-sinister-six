@@ -1,0 +1,32 @@
+public class playerTriggerHandler {
+    
+    public static void queueFull(List<Player__c> playas) {
+        List<Queue__c> closedQueues = new List<Queue__c>();
+        for(Queue__c newQ : [SELECT Name from Queue__c where closed__c = true]) {
+            closedQueues.add(newQ);
+        }
+        for (Player__c playa : playas) {
+            for (Queue__c thisQ : closedQueues) {
+                if (playa.Queue__c == thisQ.id) {
+                    playa.addError('Hey! This queue is already full.');
+                }
+            }
+        }
+    }
+    
+    public static void nonMatch(List<Player__c> playas) {
+        List<Region__c> regs = new List<Region__c>();
+        for (Region__c reg : [SELECT name, realm__c FROM region__c]) {
+            regs.add(reg);
+        }
+        for (Player__c playa : playas) {
+            for (Region__c reg : regs) {
+                if (playa.region__c == reg.Id) {
+                    if (playa.realm__c != reg.Realm__c) {
+                        playa.addError('Please select a region within the specified realm.');
+                    }
+                }
+            }
+        }
+    }
+}
