@@ -1,0 +1,17 @@
+public class charTriggerHandler {
+	
+    public static void weStillNeedYou(List<Character__c> chars) {
+        List<String> parties = new List<String>();
+        for (Character__c chara : chars) {
+            parties.add(chara.party__c);
+        }
+        for (Party__c pty : [SELECT id, campaign__r.status__c FROM party__c WHERE id IN : parties]) {
+            for (Character__c chr : chars) {
+                if (pty.Campaign__r.status__c == 'In Progress') {
+                    chr.addError('You cannot delete a character in an active campaign.');
+                }
+            }
+        }
+    }
+    
+}
