@@ -1,0 +1,11 @@
+public class charDeathHandler {
+    
+    public static void seeYa(List<Character__c> chars) {
+        for (Character__c chara : chars) {
+            if (chara.dead__c == true) {
+                chara.party__c = null;
+            }
+        }
+    }
+    
+}
