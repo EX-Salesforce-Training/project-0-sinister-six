@@ -7,7 +7,7 @@ public class charTriggerHandler {
         }
         for (Party__c pty : [SELECT id, campaign__r.status__c FROM party__c WHERE id IN : parties]) {
             for (Character__c chr : chars) {
-                if (pty.Campaign__r.status__c == 'In Progress') {
+                if (chr.dead__c == false && pty.Campaign__r.status__c == 'In Progress') {
                     chr.addError('You cannot delete a character in an active campaign.');
                 }
             }
