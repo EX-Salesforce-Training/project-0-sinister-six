@@ -5,9 +5,14 @@ trigger characterTrigger on Character__c (before insert, before update, before d
         }
         when before_update {
             
+            // This will remove a dead character from a party
+            charDeathHandler.seeYa(trigger.new);
         }
         when before_delete {
+            
+            // This will prevent someone from deleting a LIVE character in an active campaign
             charTriggerHandler.weStillNeedYou(trigger.old);
+            
         }
         when after_insert {
             
