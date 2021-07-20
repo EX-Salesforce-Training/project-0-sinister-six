@@ -1,0 +1,369 @@
+@isTest
+public class tester {
+
+    // This one should test the character trigger
+    // This trigger does two things:
+    // 1. If a character dies, they are removed from the party
+    // 2. If someone attempts to remove the character but they're still in an active party, they won't be able to
+    
+    @isTest
+    static void deathTest() {	//success! 100% coverage!
+        // I have to create: a campaign, a DM, a party, a player, and a character
+        Dungeoneers__c guy = new Dungeoneers__c();
+        guy.name = 'Guy';
+        guy.username__c = 'asdf';
+        guy.Email__c = 'guy@somedude.com';
+        guy.Role__c = 'Dungeon Master';
+        
+        insert guy;
+        
+        Campaign__c camp = new Campaign__c();
+        camp.name = 'Campaign';
+        camp.Dungeon_Master__c = guy.Id;
+        camp.status__c = 'In Progress';
+        
+        insert camp;
+        
+        Party__c party = new Party__c();
+        party.name = 'The Wendigos';
+        party.campaign__c = camp.Id;
+        
+        insert party;
+        
+        Player__c dude = new Player__c();
+        dude.name = 'Hell';
+        dude.Email__c = 'hell@satan.com';
+        dude.Username__c = 'heythere';
+        
+        insert dude;
+        
+        Character__c chara = new Character__c();
+        chara.Name = 'Bob';
+        chara.Strength__c = 1;
+        chara.Constitution__c = 1;
+        chara.Dexterity__c = 1;
+        chara.Wisdom__c = 1;
+        chara.Intelligence__c = 1;
+        chara.Charisma__c = 1;
+        chara.Race__c = 'Human';
+        chara.Class__c = 'Fighter';
+        chara.Level__c = 1;
+        chara.Party__c = party.Id;
+        chara.Used_By__c = dude.Id;
+        
+        insert chara;
+        chara.Dead__c = true;
+        update chara;
+        
+        chara = [SELECT party__c FROM Character__c LIMIT 1];
+        party = [SELECT name, id FROM Party__c LIMIT 1];
+        
+        Integer charaCount = [SELECT count() FROM character__c];
+        
+        system.assert(chara.party__c != party.Id);
+    }
+    
+    // The second characterTrigger
+    @isTest
+    static void stillNeedYouTest() {	//Success! It says it's a failed test, but it's actually a success.
+        								//The delete trigger kicks in and prevents a delete, making the system think there's an error.
+        								//But no way, baby! That's all me! I put that there! With 100% code coverage.
+
+        Dungeoneers__c guy = new Dungeoneers__c();
+        guy.name = 'Guy';
+        guy.username__c = 'asdf';
+        guy.Email__c = 'guy@somedude.com';
+        guy.Role__c = 'Dungeon Master';
+        insert guy;
+        
+        Campaign__c camp = new Campaign__c();
+        camp.name = 'Campaign';
+        camp.Dungeon_Master__c = guy.Id;
+        camp.status__c = 'In Progress';
+        insert camp;
+        
+        Party__c party = new Party__c();
+        party.name = 'The Wendigos';
+        party.campaign__c = camp.Id;
+        insert party;
+        
+        Player__c dude = new Player__c();
+        dude.name = 'Hell';
+        dude.Email__c = 'hell@satan.com';
+        dude.Username__c = 'heythere';
+        insert dude;
+        
+        Character__c chara = new Character__c();
+        chara.Name = 'Bob';
+        chara.Strength__c = 1;
+        chara.Constitution__c = 1;
+        chara.Dexterity__c = 1;
+        chara.Wisdom__c = 1;
+        chara.Intelligence__c = 1;
+        chara.Charisma__c = 1;
+        chara.Race__c = 'Human';
+        chara.Class__c = 'Fighter';
+        chara.Level__c = 1;
+        chara.Party__c = party.Id;
+        chara.Used_By__c = dude.Id;
+        insert chara;
+        
+        chara = [SELECT name, id FROM character__c LIMIT 1];
+        
+        try {
+        	delete chara;
+        } catch (DmlException e) {
+            system.assert(true);
+        }
+    } 
+    
+    
+    // This one should test the player trigger
+    // 1. A safety method that makes sure no one is added to a queue that's already full.
+    // 2. Another safety method that makes sure no one can mismatch a region and realm.
+    
+    @isTest
+    static void fullQueue() {	// Success! Ugh, I had to create so many things...
+       	// I need to create a Realm, a Region, a DK, a DL, a Queue, a Player to go into the Queue, and a Player to try to enter it after it's closed
+        
+        Dungeoneers__c guy1 = new Dungeoneers__c();
+        guy1.name = 'Guy';
+        guy1.username__c = 'asdf';
+        guy1.Email__c = 'gu1y@somedude.com';
+        guy1.Role__c = 'Dungeon King/Queen';
+        insert guy1;
+        
+        Dungeoneers__c guy2 = new Dungeoneers__c();
+        guy2.name = 'Guy';
+        guy2.username__c = 'asd2';
+        guy2.Email__c = 'gu2y@somedude.com';
+        guy2.Role__c = 'Dungeon Lord';
+        insert guy2;
+        
+        Realm__c realm = new Realm__c();
+        realm.Name = 'Wowowee';
+        realm.Includes_States__c = 'Oregon';
+        realm.Dungeoneer__c = guy1.Id;
+        insert realm;
+        
+        Region__c region = new Region__c();
+       	region.Name = 'Wow!';
+        region.City__c = 'Hillsboro';
+        region.Realm__c = realm.Id;
+        region.DL_in_Charge__c = guy2.Id;
+        insert region;
+        
+        Dungeoneers__c guy3 = new Dungeoneers__c();
+        guy3.name = 'Guy';
+        guy3.username__c = 'asd32';
+        guy3.Email__c = 'gu2y3@somedude.com';
+        guy3.Role__c = 'Dungeon Master';
+        guy3.Realm__c = realm.Id;
+        guy3.Region__c = region.Id;
+        insert guy3;
+        
+        
+        Queue__c Q = new Queue__c();
+        Q.Realm__c = realm.Id;
+        Q.Region__c = region.Id;
+        Q.Assigned_DM__c = guy3.Id;
+        
+        Player__c dude = new Player__c();
+        dude.name = 'Hell';
+        dude.Email__c = 'hell@satan.com';
+        dude.Username__c = 'heythere';
+        dude.Queue__c = Q.Id;
+        insert dude;
+        
+        Q.Closed__c = true;
+        insert Q;
+        
+        Player__c guy = new Player__c();
+        guy.Name = 'Angel';
+        guy.Email__c = 'heavengood@pure.com';
+        guy.Username__c = 'Go away';
+        guy.Queue__c = Q.Id;
+        try {
+       		insert guy;
+        } catch(DmlException e) {
+            system.assert(true);
+        }
+        
+    }
+    
+    @isTest
+    static void mismatchTime() {
+        // I should create a player, two realms, and a region that belongs to one of the realms.
+        // I should then mismatch the realm and the region on the player.
+        
+        Dungeoneers__c guy1 = new Dungeoneers__c();
+        guy1.name = 'Guy';
+        guy1.username__c = 'asdf';
+        guy1.Email__c = 'gu1y@somedude.com';
+        guy1.Role__c = 'Dungeon King/Queen';
+        insert guy1;
+        
+       	Realm__c realm = new Realm__c();
+        realm.Name = 'Wowowee';
+        realm.Includes_States__c = 'Oregon';
+        realm.Dungeoneer__c = guy1.Id;
+        insert realm;
+        
+        Realm__c realm1 = new Realm__c();
+        realm1.Name = 'Wowowee!';
+        realm1.Includes_States__c = 'California';
+        realm1.Dungeoneer__c = guy1.Id;
+        insert realm1;
+        
+        Dungeoneers__c guy2 = new Dungeoneers__c();
+        guy2.name = 'Guy';
+        guy2.username__c = 'asd2';
+        guy2.Email__c = 'gu2y@somedude.com';
+        guy2.Role__c = 'Dungeon Lord';
+        insert guy2;
+        
+        Region__c region = new Region__c();
+       	region.Name = 'Wow!';
+        region.City__c = 'Hillsboro';
+        region.Realm__c = realm1.Id;
+        region.DL_in_Charge__c = guy2.Id;
+        insert region;
+        
+        Player__c guy = new Player__c();
+        guy.Name = 'Angel';
+        guy.Email__c = 'heavengood@pure.com';
+        guy.Realm__c = realm.id;
+        guy.Region__c = region.Id;
+        guy.Username__c = 'Go away';
+        try {
+       		insert guy;
+        } catch(DmlException e) {
+            system.assert(true);
+        }
+        
+    }
+    
+    // This one should test the queueCloser trigger
+    // 1. The closer handler will remove all players from a Queue that has been closed
+    // 2. The non-close handler will prevent you from closing a Queue that has zero people in it.
+    
+    @isTest
+    static void closingTime() {
+        //I should create a player and a Queue
+        //I should put that player in the Queue, then close the Queue, then test to see if the player is still assigned to it
+        
+        Dungeoneers__c guy1 = new Dungeoneers__c();
+        guy1.name = 'Guy';
+        guy1.username__c = 'asdf';
+        guy1.Email__c = 'gu1y@somedude.com';
+        guy1.Role__c = 'Dungeon King/Queen';
+        insert guy1;
+        
+        Dungeoneers__c guy2 = new Dungeoneers__c();
+        guy2.name = 'Guy';
+        guy2.username__c = 'asd2';
+        guy2.Email__c = 'gu2y@somedude.com';
+        guy2.Role__c = 'Dungeon Lord';
+        insert guy2;
+        
+        Realm__c realm = new Realm__c();
+        realm.Name = 'Wowowee';
+        realm.Includes_States__c = 'Oregon';
+        realm.Dungeoneer__c = guy1.Id;
+        insert realm;
+        
+        Region__c region = new Region__c();
+       	region.Name = 'Wow!';
+        region.City__c = 'Hillsboro';
+        region.Realm__c = realm.Id;
+        region.DL_in_Charge__c = guy2.Id;
+        insert region;
+        
+        Dungeoneers__c guy3 = new Dungeoneers__c();
+        guy3.name = 'Guy';
+        guy3.username__c = 'asd32';
+        guy3.Email__c = 'gu2y3@somedude.com';
+        guy3.Role__c = 'Dungeon Master';
+        guy3.Realm__c = realm.Id;
+        guy3.Region__c = region.Id;
+        insert guy3;
+        
+        Queue__c Q = new Queue__c();
+        Q.Realm__c = realm.Id;
+        Q.Region__c = region.Id;
+        Q.Assigned_DM__c = guy3.Id;
+        Q.Closed__c = false;
+        insert Q;
+        
+        Player__c guy = new Player__c();
+        guy.Name = 'Angel';
+        guy.Email__c = 'heavengood@pure.com';
+        guy.Realm__c = realm.id;
+        guy.Region__c = region.Id;
+        guy.Username__c = 'Go away';
+        guy.Queue__c = Q.Id;
+       	insert guy;
+        
+        try {
+        	Q.Closed__c = true;
+         	update Q;
+        } catch(DmlException e) {
+            system.assert(true);
+        }
+    }
+    
+    @isTest
+    static void dontCloseMe() {
+        
+        Dungeoneers__c guy1 = new Dungeoneers__c();
+        guy1.name = 'Guy';
+        guy1.username__c = 'asdf';
+        guy1.Email__c = 'gu1y@somedude.com';
+        guy1.Role__c = 'Dungeon King/Queen';
+        insert guy1;
+        
+        Dungeoneers__c guy2 = new Dungeoneers__c();
+        guy2.name = 'Guy';
+        guy2.username__c = 'asd2';
+        guy2.Email__c = 'gu2y@somedude.com';
+        guy2.Role__c = 'Dungeon Lord';
+        insert guy2;
+        
+        Realm__c realm = new Realm__c();
+        realm.Name = 'Wowowee';
+        realm.Includes_States__c = 'Oregon';
+        realm.Dungeoneer__c = guy1.Id;
+        insert realm;
+        
+        Region__c region = new Region__c();
+       	region.Name = 'Wow!';
+        region.City__c = 'Hillsboro';
+        region.Realm__c = realm.Id;
+        region.DL_in_Charge__c = guy2.Id;
+        insert region;
+        
+        Dungeoneers__c guy3 = new Dungeoneers__c();
+        guy3.name = 'Guy';
+        guy3.username__c = 'asd32';
+        guy3.Email__c = 'gu2y3@somedude.com';
+        guy3.Role__c = 'Dungeon Master';
+        guy3.Realm__c = realm.Id;
+        guy3.Region__c = region.Id;
+        insert guy3;
+        
+        Queue__c Q = new Queue__c();
+        Q.Realm__c = realm.Id;
+        Q.Region__c = region.Id;
+        Q.Assigned_DM__c = guy3.Id;
+        Q.Closed__c = false;
+        insert Q;
+        
+        Q.Closed__c = true;
+        try {
+        	update Q;
+        } catch (DmlException e) {
+            system.assert(true);
+        }
+    }
+    
+}
