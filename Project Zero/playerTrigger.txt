@@ -1,10 +1,15 @@
-trigger queueFullTrigger on Player__c (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+trigger playerTrigger on Player__c (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
     switch on trigger.operationtype{
         when BEFORE_INSERT {
+            
+            // A safety method. You can't insert a character into a full queue.
             playerTriggerHandler.queueFull(trigger.new);
         }
         when BEFORE_UPDATE {
+            // Same safety method as above
             playerTriggerHandler.queueFull(trigger.new);
+            
+            // Another safety method! If someone tries to mismatch a region and realm, they won't be able to.
             playerTriggerHandler.nonMatch(trigger.new);
         }
         when BEFORE_DELETE {
