@@ -4,11 +4,11 @@ trigger queueCloserTrigger on Queue__c (before insert, before update, before del
             
         }
         when BEFORE_UPDATE {
-            // This trigger is in charge of taking players off queues when they've closed.
-            queueCloserHandler.closingQ(trigger.new);
-            
             // This trigger is in charge of preventing users from closing an empty queue
             queueNonCloseHandler.deleteInstead(trigger.new);
+            
+            // This trigger is in charge of taking players off queues when they've closed.
+            queueCloserHandler.closingQ(trigger.new);
         }
         when BEFORE_DELETE {
             
