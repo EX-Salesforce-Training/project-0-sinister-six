@@ -1,0 +1,21 @@
+public class CreditCardTriggerHandler {
+	//code coverage 88%;
+    public static void OnNewCard(List<Credit_Card__c> newCards){
+
+        for (Credit_Card__c C: newCards){
+
+            UtilityBelt utils = new UtilityBelt();
+            String cardNum = C.Card_Number__c;
+            String secNum = String.valueOf(C.Security_Code__c);
+
+            String isValid = utils.ValidCard(cardNum, secNum);
+            
+            if (!isValid.startsWith('Valid')){
+                C.addError(isValid);
+            }else{
+                C.Type__c = isValid.split(' ')[1];
+            }
+
+        }
+    }
+}

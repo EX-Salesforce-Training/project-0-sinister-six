@@ -1,0 +1,23 @@
+public class ContractTriggerHandler {
+	//code coverage: 100%
+    public static void OnNewContract(List<Contract> newContracts){
+		//adds a task to the task queue to alert meteorologists to check the current weather associated with the contract
+        List<Task> checkWeather = new List<Task>();
+        UtilityBelt utils = new UtilityBelt();
+        for (Contract c: newContracts){
+			checkWeather.add(utils.ToTaskQueue('Determine_Weather_Queue', 'Please report on current weather', 'High', c.id, c.AccountId));
+        }
+        database.insert(checkWeather, True);
+    }
+    
+    public static void OnStatusChange(List<Contract> upContracts){
+		//adds a task to the create weather queue after the meteorlogists job is done to alter the weather itself
+        List<Task> makeWeather = new List<Task>();
+        UtilityBelt utils = new UtilityBelt();
+        for (Contract c: upContracts){
+			makeWeather.add(utils.ToTaskQueue('Create_Weather_Queue', 'Make it rain', 'High', c.id, c.AccountId));
+        }
+        database.insert(makeWeather, True);
+    }
+    
+}

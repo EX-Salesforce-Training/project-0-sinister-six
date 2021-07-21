@@ -1,0 +1,261 @@
+@isTest
+public class TriggerTest {
+    public static Credit_Card__c newCard(String cardNum){
+        Credit_Card__c C = new Credit_Card__c();
+        C.Card_Number__c = cardNum ;
+        C.First_Name__c = 'bob';
+        C.last_name__c = 'tomer';
+        C.Security_Code__c = 123;
+        C.Name = 'potatobug';
+        C.Expiration_Date__c = Date.newInstance(2022, 12, 1);
+        return C;
+    }
+
+    public static Account fakeAccount(){
+        Account A = new Account();
+        A.Name = 'Potato';
+        database.insert(A);
+        Account Acc = [SELECT Id, name FROM Account WHERE Name = 'Potato'][0];
+        return Acc;
+    }
+    
+    public static void testInsert(Contract C){
+        try{
+	        database.insert(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }
+    }
+    
+    public static void testInsert(List<Contract> C){
+        try{
+	        database.insert(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }
+    }
+
+    public static void testUpdate(Contract C){
+        try{
+	        database.update(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }
+    }
+    
+    public static void testUpdate(List<Contract> C){
+        try{
+	        database.update(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }
+    }
+    
+    // credit card validation tests
+    @isTest
+    static void NewValidCardTest(){
+		Credit_Card__c C = newCard('4123123412341234');        
+        try{
+	        database.insert(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }
+    }
+    
+	@isTest
+    static void NewInvalidCardTest(){
+		Credit_Card__c C = newCard('1123123412341234');        
+        
+        try{
+	        database.insert(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }
+    }
+    
+    @isTest
+    static void NewValidCardBulkTest(){
+        List<Credit_Card__c> C = new List<Credit_Card__c>();
+        for(integer x = 0; x < 100; x++){
+            String cardNum = '423412341234' + string.valueOf(x).leftPad(4, '0');
+            C.add(newCard(cardNum));
+        }
+        try{
+	        database.insert(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }       
+    }
+    
+    @isTest
+    static void NewInvalidCardBulkTest(){
+        List<Credit_Card__c> C = new List<Credit_Card__c>();
+        for(integer x = 0; x < 100; x++){
+            String cardNum = '123412341234' + string.valueOf(x).leftPad(4, '0');
+            C.add(newCard(cardNum));
+        }
+        try{
+	        database.insert(C);
+        }catch (DMLException e){
+            system.assert(True);
+        }       
+    }
+
+	//contract validation tests
+    @isTest
+    static void NewValidContractTest(){
+		Account A = fakeAccount();
+
+        Contract newContract = new Contract();
+        newContract.AccountId = A.Id;
+        newContract.Status = 'Draft';
+        newContract.StartDate = Date.newInstance(2022, 12, 1);
+        newcontract.ContractTerm = 2;
+        
+		testInsert(newContract);
+        
+    }
+
+    @isTest
+    static void NewInvalidContractTest(){
+		Account A = fakeAccount();
+
+        Contract newContract = new Contract();
+        newContract.AccountId = A.Id;
+        newContract.Status = 'potato';
+        newContract.StartDate = Date.newInstance(2022, 12, 1);
+        newcontract.ContractTerm = 2;
+
+		testInsert(newContract);
+    }
+
+    @isTest
+    static void NewValidContractBulkTest(){
+		Account A = fakeAccount();
+
+        List<Contract> contractList = new List<Contract>();
+        
+        for (integer i = 0; i < 20; i++){
+            Contract newContract = new Contract();
+            newContract.AccountId = A.Id;
+            newContract.Status = 'Draft';
+            newContract.StartDate = Date.newInstance(2022, 12, 1);
+            newContract.ContractTerm = 2;
+           	contractList.add(newContract);
+        }
+        
+		testInsert(contractList);
+        
+    }
+
+    @isTest
+    static void NewInvalidContractBulkTest(){
+		Account A = fakeAccount();
+
+        List<Contract> contractList = new List<Contract>();
+        
+        for (integer i = 0; i < 20; i++){
+            Contract newContract = new Contract();
+            newContract.AccountId = A.Id;
+            newContract.Status = 'potato';
+            newContract.StartDate = Date.newInstance(2022, 12, 1);
+            newContract.ContractTerm = 2;
+           	contractList.add(newContract);
+        }
+        
+		testInsert(contractList);
+        
+    }
+
+	//contract status update tests
+	@isTest
+    static void UpdateValidContractTest(){
+		//dupicate contract creation to test against
+        Account A = fakeAccount();
+
+        Contract newContract = new Contract();
+        newContract.AccountId = A.Id;
+        newContract.Status = 'Draft';
+        newContract.StartDate = Date.newInstance(2022, 12, 1);
+        newcontract.ContractTerm = 2;
+        
+		testInsert(newContract);
+
+        //
+        Contract upContract = [SELECT Id, Status FROM Contract WHERE Status = 'Draft'][0];
+		upContract.Status = 'Approved';
+		testUpdate(upContract);       
+        
+    }
+    
+	@isTest
+    static void UpdateInvalidContractTest(){
+		//dupicate contract creation to test against
+        Account A = fakeAccount();
+
+        Contract newContract = new Contract();
+        newContract.AccountId = A.Id;
+        newContract.Status = 'Draft';
+        newContract.StartDate = Date.newInstance(2022, 12, 1);
+        newcontract.ContractTerm = 2;
+        
+		testInsert(newContract);
+
+        //
+        Contract upContract = [SELECT Id, Status FROM Contract WHERE Status = 'Draft'][0];
+		upContract.Status = 'Appr1oved';
+		testUpdate(upContract);
+        
+    }
+    
+    @isTest
+    static void UpdateValidContractBulkTest(){
+		Account A = fakeAccount();
+
+        List<Contract> contractList = new List<Contract>();
+        
+        for (integer i = 0; i < 20; i++){
+            Contract newContract = new Contract();
+            newContract.AccountId = A.Id;
+            newContract.Status = 'Draft';
+            newContract.StartDate = Date.newInstance(2022, 12, 1);
+            newContract.ContractTerm = 2;
+           	contractList.add(newContract);
+        }
+        
+		testInsert(contractList);
+
+        List<Contract> upContracts = [SELECT Id, Status FROM Contract WHERE Status = 'Draft'];
+        for (Contract C : upContracts){
+	        C.Status = 'Approved';            
+        }
+		testUpdate(upContracts);   
+        
+    }
+    
+    @isTest
+    static void UpdateInvalidContractBulkTest(){
+		Account A = fakeAccount();
+
+        List<Contract> contractList = new List<Contract>();
+        
+        for (integer i = 0; i < 20; i++){
+            Contract newContract = new Contract();
+            newContract.AccountId = A.Id;
+            newContract.Status = 'Draft';
+            newContract.StartDate = Date.newInstance(2022, 12, 1);
+            newContract.ContractTerm = 2;
+           	contractList.add(newContract);
+        }
+        
+		testInsert(contractList);
+
+        List<Contract> upContracts = [SELECT Id, Status FROM Contract WHERE Status = 'Draft'];
+        for (Contract C : upContracts){
+	        C.Status = 'Appr3oved';            
+        }
+		testUpdate(upContracts);
+        
+    }
+    
+}

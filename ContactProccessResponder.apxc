@@ -1,0 +1,25 @@
+public class ContactProccessResponder {
+	@InvocableMethod
+    public static void NewManager(List<Contact> theseContact){
+		/*
+		 * adds the current contact's name and phone number to the associated manager's page
+		 */
+        Set<Id> managerIds = new Set<Id>();
+        
+        for (Contact C: theseContact){
+            managerIds.add(C.ReportsToId);
+        }
+        
+        List<Contact> managers = [SELECT Id, AssistantName, AssistantPhone FROM Contact WHERE Id IN :managerIds];
+        
+        for (Contact C: theseContact){
+            for (Contact M: managers){
+                if (M.Id == C.ReportsToId){
+                    M.AssistantName = C.FirstName + ' ' + C.LastName; //C.Name;
+                    M.AssistantPhone = C.MobilePhone;
+                }
+            }
+        }
+        database.update(managers);
+    }
+}
