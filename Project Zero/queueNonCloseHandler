@@ -1,14 +1,11 @@
 public class queueNonCloseHandler {
     
     public static void deleteInstead(List<Queue__c> Qs) {
-        List<Player__c> playas = [SELECT name, id, queue__c FROM player__c where queue__c IN : Qs];
-        for (Queue__c Q : Qs) {
-            if (Q.Closed__c == true) {
-                if (playas.size() == 0) {
-                    Q.addError('This queue is empty, so it cannot be closed. If you want to get rid of it, try deleting it instead.');
-                    
-                }
-        	}
-     	}
-	}
+        List<Player__c> playersInQ = [SELECT queue__c FROM player__c WHERE queue__c IN : Qs];
+        for (Queue__c q : Qs) {
+            if (q.closed__c == true && playersInQ.size() == 0) {
+                q.addError('This queue is empty, so it cannot be closed. If you would like to get rid of it, try deleting it instead.');
+            }
+        }
+    }
 }
