@@ -1,0 +1,14 @@
+<!-- Create a visualforce page to display a list of contacts with the firstname, lastname, phone, and email. -->
+
+<apex:page standardController="Contact" recordSetVar="cont">
+    <apex:form>
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!cont}" var="con">
+				<apex:column value="{!con.firstname}"/>                
+				<apex:column value="{!con.lastname}"/>                
+				<apex:column value="{!con.phone}"/>                
+            	<apex:column value="{!con.email}"/>
+            </apex:pageBlockTable>  
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
