@@ -1,0 +1,14 @@
+<apex:page controller="CustomAccountAndContact">
+    <apex:form>
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!conList}" var="con">
+				<apex:column value="{!con.firstname}"/>                              
+				<apex:column value="{!con.lastname}"/>                              
+				<apex:column value="{!con.phone}"/>                              
+				<apex:column value="{!con.email}"/>
+                <apex:column value="{!con.account.name}"/>
+                <apex:column value="{!con.account.site}"/>
+            </apex:pageBlockTable>    
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
