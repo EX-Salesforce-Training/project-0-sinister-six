@@ -1,0 +1,17 @@
+<!--
+Create a page with a custom controller that displays the same details for the Contact object.
+
+As a bonus objective create a button that filters the results to just those in the state of California.
+-->
+<apex:page controller="myCustomContact">
+    <apex:form>
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!conList}" var="con">
+				<apex:column value="{!con.firstname}"/>                              
+				<apex:column value="{!con.lastname}"/>                              
+				<apex:column value="{!con.phone}"/>                              
+				<apex:column value="{!con.email}"/>
+            </apex:pageBlockTable>    
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
