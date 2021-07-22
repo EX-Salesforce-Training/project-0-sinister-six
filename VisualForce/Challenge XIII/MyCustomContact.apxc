@@ -1,0 +1,6 @@
+public class MyCustomContact {
+	public List<Contact> conList{get;set;}
+     public myCustomContact(){
+         conList = [SELECT Id, firstname, lastname, phone, email from Contact];
+     }
+}
